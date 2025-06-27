@@ -254,7 +254,7 @@ def match_icd10_codes(term: str) -> List[Dict]:
             print("Sample match structure:")
             print(matches[0])
         print("===============================\n")
-        return matches
+        return []
         
     except Exception as e:
         print(f"Error in match_icd10_codes: {str(e)}")
