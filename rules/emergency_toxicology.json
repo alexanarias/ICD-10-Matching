@@ -1,0 +1,56 @@
+{
+    "name": "Emergency and Toxicology Care",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "carbon monoxide poisoning",
+                "CO poisoning",
+                "oxygen deficiency",
+                "carbon monoxide exposure",
+                "hyperbaric oxygen condition",
+                "sudden cardiac arrest",
+                "ICD care emergency",
+                "DC shock condition"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "CO exposure assessment",
+                "oxygen therapy",
+                "hyperbaric oxygen treatment",
+                "CO poisoning treatment",
+                "heart monitoring",
+                "emergency contraception treatment",
+                "ICD monitoring",
+                "cardiac arrest prevention"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "carbon monoxide symptoms",
+                "oxygen deficiency signs",
+                "CO exposure symptoms",
+                "cardiac emergency signs",
+                "emergency contraception side effects",
+                "heart rhythm abnormalities",
+                "sudden cardiac symptoms"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "CO detectors installation",
+                "CO poisoning prevention",
+                "emergency oxygen therapy",
+                "cardiac emergency care",
+                "ICD management",
+                "emergency contraception",
+                "oxygen treatment care",
+                "ventilator-associated injury care"
+            ]
+        }
+    ]
+}

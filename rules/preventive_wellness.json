@@ -1,0 +1,57 @@
+{
+    "name": "Preventive Medicine and Wellness",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "health risk factors",
+                "preventable conditions",
+                "lifestyle-related risks",
+                "wellness concerns",
+                "preventive health needs",
+                "health maintenance issues",
+                "risk assessment findings",
+                "wellness evaluation"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "health screening",
+                "preventive assessment",
+                "wellness evaluation",
+                "risk factor analysis",
+                "lifestyle assessment",
+                "health maintenance review",
+                "preventive testing",
+                "wellness monitoring"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "early warning signs",
+                "health risk indicators",
+                "preventive care needs",
+                "lifestyle impact signs",
+                "wellness concerns",
+                "health maintenance issues",
+                "preventive health symptoms",
+                "risk factor manifestations"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "preventive care",
+                "wellness management",
+                "health maintenance",
+                "lifestyle modification",
+                "risk reduction",
+                "health promotion",
+                "preventive measures",
+                "wellness optimization"
+            ]
+        }
+    ]
+}

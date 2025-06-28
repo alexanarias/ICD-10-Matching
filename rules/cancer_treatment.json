@@ -1,0 +1,56 @@
+{
+    "name": "Cancer Treatment",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "cancer-related fatigue",
+                "managing cancer fatigue",
+                "cancer treatment fatigue",
+                "persistent tiredness",
+                "chemotherapy-induced stomatitis",
+                "mouth infections",
+                "oral mucositis"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "chemotherapy",
+                "chemotherapy nutrition",
+                "cancer patient diet",
+                "immunotherapy",
+                "radiation exposure",
+                "CT care",
+                "blood flow assessment",
+                "cancer patient care"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "dry mouth",
+                "oral mucositis",
+                "sore mouth",
+                "medicated mouth rinses",
+                "mouth care",
+                "fatigue management",
+                "energy management",
+                "patient support"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "chemotherapy side effects management",
+                "hydration during chemotherapy",
+                "food safety for immunocompromised",
+                "nutritional support in cancer prevention",
+                "chemotherapy care",
+                "eating well during chemotherapy",
+                "oral hygiene during chemotherapy",
+                "mouth care during treatment"
+            ]
+        }
+    ]
+}

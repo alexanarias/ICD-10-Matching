@@ -1,0 +1,57 @@
+{
+    "name": "Eye and Vision Care",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "glaucoma",
+                "vision loss",
+                "retinal damage",
+                "visual impairment",
+                "macula care",
+                "eye structure issues",
+                "pink eye",
+                "newborn eye conditions"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "glaucoma treatment",
+                "laser therapy for glaucoma",
+                "eye pressure measurement",
+                "retinal examination",
+                "visual field testing",
+                "eye structure assessment",
+                "eye posture measurement",
+                "dry eye treatment"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "vision changes",
+                "eye pressure symptoms",
+                "pink eye symptoms",
+                "retinal damage signs",
+                "visual field changes",
+                "eye discomfort",
+                "eye posture issues",
+                "dry eye symptoms"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "glaucoma care",
+                "secondary glaucoma treatment",
+                "retinal damage treatment",
+                "visual impairment therapy",
+                "macula care",
+                "eye posture correction",
+                "pink eye treatment",
+                "newborn eye care"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,57 @@
+{
+    "name": "Palliative and End-of-Life Care",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "terminal condition",
+                "end-stage disease",
+                "life-limiting illness",
+                "advanced disease",
+                "chronic terminal condition",
+                "palliative diagnosis",
+                "hospice condition",
+                "end-of-life status"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "palliative assessment",
+                "comfort care evaluation",
+                "end-of-life planning",
+                "symptom assessment",
+                "quality of life measurement",
+                "pain assessment",
+                "hospice evaluation",
+                "care planning"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "terminal symptoms",
+                "end-stage complications",
+                "palliative care needs",
+                "comfort concerns",
+                "quality of life issues",
+                "pain symptoms",
+                "distress signs",
+                "end-of-life symptoms"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "palliative care",
+                "comfort measures",
+                "end-of-life care",
+                "pain management",
+                "symptom control",
+                "hospice care",
+                "supportive care",
+                "quality of life management"
+            ]
+        }
+    ]
+}

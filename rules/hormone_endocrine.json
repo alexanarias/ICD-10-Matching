@@ -1,0 +1,58 @@
+{
+    "name": "Hormone and Endocrine Treatment",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "hormone deficiency",
+                "testosterone deficiency",
+                "endocrine disorders",
+                "hormone imbalance",
+                "alpha-1 antitrypsin deficiency",
+                "enzyme deficiency",
+                "hormone level abnormalities",
+                "endocrine system disorders"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "hormone level monitoring",
+                "testosterone injections",
+                "enzyme injection",
+                "hormone replacement therapy",
+                "endocrine testing",
+                "hormone therapy monitoring",
+                "alpha-1 antitrypsin testing",
+                "endocrine assessment"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "hormone deficiency symptoms",
+                "testosterone side effects",
+                "enzyme deficiency signs",
+                "hormone imbalance symptoms",
+                "endocrine symptoms",
+                "treatment side effects",
+                "hormone therapy reactions",
+                "metabolic symptoms"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "hormone replacement",
+                "testosterone therapy",
+                "enzyme replacement therapy",
+                "hormone level management",
+                "ED treatment",
+                "tension ring usage",
+                "hormone suppression",
+                "endocrine care",
+                "alpha-1 antitrypsin therapy"
+            ]
+        }
+    ]
+}

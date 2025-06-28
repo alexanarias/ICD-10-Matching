@@ -1,0 +1,57 @@
+{
+    "name": "Dialysis and Kidney Care",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "kidney disease",
+                "renal failure",
+                "peritoneal disorders",
+                "dialysis complications",
+                "continuous ambulatory peritoneal dialysis",
+                "CAPD complications",
+                "peritoneal membrane issues",
+                "renal dysfunction"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "Continuous Ambulatory Peritoneal Dialysis",
+                "peritoneal dialysis",
+                "dialysis monitoring",
+                "kidney function testing",
+                "peritoneal membrane assessment",
+                "dialysis flow reading",
+                "peritoneal equilibration test",
+                "renal function assessment"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "fluid retention",
+                "peritoneal discomfort",
+                "dialysis-related symptoms",
+                "kidney function decline",
+                "peritoneal membrane changes",
+                "dialysis complications",
+                "renal symptoms",
+                "electrolyte imbalance"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "dialysis management",
+                "peritoneal dialysis care",
+                "CAPD treatment",
+                "kidney disease management",
+                "peritoneal membrane care",
+                "dialysis flow management",
+                "renal therapy",
+                "fluid balance management"
+            ]
+        }
+    ]
+}

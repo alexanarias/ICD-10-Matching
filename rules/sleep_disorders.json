@@ -1,0 +1,57 @@
+{
+    "name": "Sleep Disorders and Sleep Medicine",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "sleep disorder",
+                "insomnia",
+                "sleep apnea",
+                "sleep disturbance",
+                "circadian rhythm disorder",
+                "narcolepsy",
+                "sleep-related breathing disorder",
+                "parasomnia"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "sleep study",
+                "polysomnography",
+                "sleep pattern assessment",
+                "sleep quality monitoring",
+                "circadian rhythm evaluation",
+                "sleep breathing assessment",
+                "sleep behavior monitoring",
+                "sleep disorder screening"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "difficulty sleeping",
+                "daytime sleepiness",
+                "sleep interruption",
+                "breathing problems during sleep",
+                "irregular sleep patterns",
+                "sleep-related fatigue",
+                "morning drowsiness",
+                "sleep quality issues"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "sleep therapy",
+                "sleep hygiene education",
+                "CPAP therapy",
+                "sleep medication",
+                "behavioral sleep therapy",
+                "circadian rhythm management",
+                "sleep environment modification",
+                "sleep disorder management"
+            ]
+        }
+    ]
+}

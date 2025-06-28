@@ -1,0 +1,57 @@
+{
+    "name": "Infectious Diseases and Prevention",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "infectious disease",
+                "viral infection",
+                "bacterial infection",
+                "fungal infection",
+                "parasitic infection",
+                "communicable disease",
+                "contagious condition",
+                "systemic infection"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "infection screening",
+                "pathogen testing",
+                "culture and sensitivity",
+                "infectious disease monitoring",
+                "viral load testing",
+                "antibody testing",
+                "infection source tracking",
+                "disease surveillance"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "fever",
+                "infection signs",
+                "systemic symptoms",
+                "localized infection",
+                "infectious complications",
+                "disease progression",
+                "contagious symptoms",
+                "infection markers"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "antibiotic therapy",
+                "antiviral treatment",
+                "antifungal medication",
+                "infection control",
+                "disease management",
+                "preventive measures",
+                "isolation protocols",
+                "infection prevention"
+            ]
+        }
+    ]
+}

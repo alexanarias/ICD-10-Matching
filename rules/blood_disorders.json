@@ -1,0 +1,53 @@
+{
+    "name": "Blood Disorders and Transfusions",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "anemia",
+                "bone marrow suppression",
+                "red blood cell deficiency",
+                "iron deficiency",
+                "chemotherapy-induced anemia",
+                "blood cell deficiency",
+                "red blood cell deficiency",
+                "white blood cell deficiency"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "blood transfusion",
+                "platelet transfusion",
+                "plasma transfusion",
+                "red blood cells transfusion",
+                "white blood cells transfusion",
+                "blood typing",
+                "transfusion care",
+                "erythropoietin therapy",
+                "iron supplementation"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "fatigue",
+                "shortness of breath",
+                "cancer blood loss",
+                "blood complications",
+                "transfusion complications"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "anemia treatment",
+                "iron and vitamin supplementation",
+                "oncology care",
+                "cancer care",
+                "blood loss management",
+                "transfusion monitoring"
+            ]
+        }
+    ]
+}

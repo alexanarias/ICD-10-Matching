@@ -5,3 +5,4 @@ pdfplumber
 uvicorn
 python-multipart
 python-docx
+PyMuPDF

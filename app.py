@@ -15,6 +15,8 @@ from typing import List, Dict
 import csv
 from io import BytesIO
 import os
+import fitz
+from collections import defaultdict
 
 app = FastAPI(
     title="Medical Text Analysis API",
@@ -138,6 +140,77 @@ def extract_text_from_pdf(pdf_file: bytes) -> str:
         import traceback
         print(f"Full traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=400, detail=f"Error processing PDF: {str(e)}")
+
+def get_intro_between_h1_and_h2(pdf_bytes: bytes) -> str:
+    """Extract meaningful text from the first page of a PDF.
+    
+    This function attempts to extract text in a smart way:
+    1. Gets all text blocks from the first page
+    2. Identifies the title (largest font)
+    3. Collects all text after the title that's not a header
+    4. Removes periods from the text
+    """
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    if len(doc) == 0:
+        doc.close()
+        return ""
+    
+    # Get first page
+    page = doc[0]
+    blocks = page.get_text("dict")["blocks"]
+    
+    # Collect all text spans with their properties
+    spans_with_props = []
+    for block in blocks:
+        for line in block.get("lines", []):
+            for span in line.get("spans", []):
+                text = span["text"].strip()
+                if text:
+                    # Remove periods from the text
+                    text = text.replace('.', '')
+                    spans_with_props.append({
+                        "text": text,
+                        "size": span["size"],
+                        "font": span["font"],
+                        "color": span["color"],
+                        "flags": span["flags"]  # Bold, italic, etc.
+                    })
+    
+    if not spans_with_props:
+        doc.close()
+        return ""
+
+    # Find the title (largest font size)
+    sizes = sorted({s["size"] for s in spans_with_props}, reverse=True)
+    title_size = sizes[0]
+
+    # Collect meaningful text after title
+    content = []
+    title_found = False
+    current_section = []
+
+    for span in spans_with_props:
+        text = span["text"]
+        size = span["size"]
+
+        if size == title_size and not title_found:
+            title_found = True
+            continue
+
+        if title_found:
+            # Skip if it looks like a header (significantly larger than average text)
+            if size > title_size * 0.7:
+                if current_section:
+                    content.append(" ".join(current_section))
+                    current_section = []
+            else:
+                current_section.append(text)
+
+    if current_section:
+        content.append(" ".join(current_section))
+
+    doc.close()
+    return " ".join(content).strip()
 
 def extract_medical_terms(text: str, domain: str = None) -> List[Dict]:
     """Extract medical terms using medspacy"""
@@ -285,7 +358,7 @@ async def analyze_pdf(file: UploadFile = File(...)):
         print(f"Content length: {len(contents)} bytes")
         print("=============================\n")
         
-        text = extract_text_from_pdf(contents)
+        text = get_intro_between_h1_and_h2(contents)
         
         # Extract medical terms
         medical_terms = extract_medical_terms(text)

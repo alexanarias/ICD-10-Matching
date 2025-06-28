@@ -1,0 +1,57 @@
+{
+    "name": "Ear, Nose, and Throat Care",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "ear fullness",
+                "ear pressure",
+                "dizziness",
+                "hearing loss",
+                "eardrum issues",
+                "ear tube complications",
+                "ear drainage",
+                "thyroid disorders"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "Ear Tube Procedure",
+                "eardrum surgery",
+                "pediatric ear surgery",
+                "post-surgical ear care",
+                "recovery after ear tubes",
+                "thyroid surgery",
+                "partial nephrectomy",
+                "radical nephrectomy"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "ear pressure symptoms",
+                "hearing changes",
+                "balance issues",
+                "ear drainage signs",
+                "post-surgical symptoms",
+                "thyroid symptoms",
+                "ear pain",
+                "throat discomfort"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "ear pressure management",
+                "hearing improvement therapy",
+                "ear tube aftercare",
+                "post-surgical care",
+                "thyroid treatment",
+                "hormone therapy",
+                "ear drainage care",
+                "ENT follow-up care"
+            ]
+        }
+    ]
+}

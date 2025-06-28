@@ -1,0 +1,79 @@
+{
+    "name": "Allergies and Respiratory Conditions",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "dust mite allergies",
+                "allergic rhinitis",
+                "asthma",
+                "bronchiolitis",
+                "mold allergies",
+                "pollen allergies",
+                "seasonal allergies",
+                "respiratory infection",
+                "allergy triggers",
+                "allergic reaction",
+                "environmental allergies",
+                "seasonal allergic rhinitis"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "sneezing",
+                "coughing",
+                "itchy eyes",
+                "wheezing",
+                "trouble breathing",
+                "dry cough",
+                "nasal congestion",
+                "asthma symptoms",
+                "allergic reaction",
+                "runny nose",
+                "watery eyes",
+                "throat irritation",
+                "chest tightness",
+                "shortness of breath",
+                "sinus pressure"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "dust mite control",
+                "allergen-proof covers",
+                "dust allergy treatment",
+                "antihistamines",
+                "nasal sprays",
+                "mold allergy treatment",
+                "asthma inhalers",
+                "decongestants",
+                "bronchiolitis care",
+                "nebulizer treatment",
+                "pollen allergy treatment",
+                "allergy immunotherapy",
+                "allergy shots",
+                "air purification",
+                "environmental control"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "allergy testing",
+                "mold spore detection",
+                "allergen exposure testing",
+                "asthma triggers assessment",
+                "respiratory flow assessment",
+                "airflow obstruction assessment",
+                "asthma action plan",
+                "lung condition care",
+                "allergen identification",
+                "skin prick testing",
+                "pulmonary function testing",
+                "peak flow monitoring"
+            ]
+        }
+    ]
+}

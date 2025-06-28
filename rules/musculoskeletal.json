@@ -1,72 +1,58 @@
 {
-    "name": "Musculoskeletal",
+    "name": "Musculoskeletal Conditions",
     "rules": [
         {
             "category": "DIAGNOSIS",
             "terms": [
-                "arthritis",
                 "basal joint arthritis",
-                "osteoarthritis",
-                "rheumatoid arthritis",
-                "degenerative joint disease",
-                "joint inflammation",
-                "carpometacarpal arthritis",
+                "trapeziometacarpal joint arthritis",
                 "thumb arthritis",
-                "hand arthritis",
-                "joint degeneration",
-                "joint disease",
-                "inflammatory arthritis",
-                "post-traumatic arthritis"
+                "osteoarthritis",
+                "knee arthritis",
+                "joint inflammation",
+                "joint pain",
+                "knee joint fluid"
             ]
         },
         {
-            "category": "PROBLEM",
+            "category": "PROCEDURE",
+            "terms": [
+                "trapezectomy",
+                "LRTI surgery",
+                "joint fusion",
+                "osteotomy",
+                "joint replacement",
+                "hyaluronic acid injections",
+                "viscosupplementation",
+                "arthritis knee pain treatment",
+                "knee pain management"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
             "terms": [
                 "joint pain",
-                "stiffness",
-                "swelling",
+                "basal joint pain",
+                "thumb base pain",
+                "knee inflammation",
+                "joint stiffness",
                 "reduced mobility",
-                "joint instability",
-                "weakness",
-                "limited range of motion",
-                "joint deformity",
-                "thumb pain",
-                "hand pain",
-                "joint tenderness",
-                "morning stiffness",
-                "joint crepitus",
-                "difficulty gripping",
-                "difficulty pinching",
-                "reduced strength",
-                "joint inflammation"
+                "swelling",
+                "pain during movement"
             ]
         },
         {
             "category": "TREATMENT",
             "terms": [
-                "viscosupplementation",
-                "joint injection",
-                "hyaluronic acid injection",
-                "corticosteroid injection",
-                "surgical options",
-                "joint replacement",
-                "arthroscopy",
-                "joint fusion",
-                "ligament reconstruction",
+                "NSAID treatment",
+                "thumb brace",
+                "corticosteroid injections",
+                "joint pain relief",
                 "physical therapy",
                 "occupational therapy",
-                "hand therapy",
-                "splinting",
-                "bracing",
-                "anti-inflammatory medication",
-                "NSAIDs",
                 "pain management",
-                "joint protection",
-                "activity modification",
-                "exercises",
-                "strengthening exercises",
-                "range of motion exercises",
-                "joint mobilization"
+                "anti-inflammatory medication",
+                "joint protection techniques"
             ]
         }
     ]

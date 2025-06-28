@@ -1,0 +1,60 @@
+{
+    "name": "Mental Health and Behavioral Therapy",
+    "rules": [
+        {
+            "category": "DIAGNOSIS",
+            "terms": [
+                "Generalized Anxiety Disorder",
+                "GAD anxiety in children",
+                "anxiety in teens",
+                "teen mental health",
+                "mental changes during puberty",
+                "LGBTQ+ mental health",
+                "suicide risk factors",
+                "behavioral disorders"
+            ]
+        },
+        {
+            "category": "PROCEDURE",
+            "terms": [
+                "mental health assessment",
+                "anxiety screening",
+                "behavioral therapy",
+                "suicide risk assessment",
+                "teen counseling",
+                "family therapy",
+                "group therapy",
+                "psychological evaluation",
+                "mental health monitoring"
+            ]
+        },
+        {
+            "category": "SYMPTOMS",
+            "terms": [
+                "worry and nervousness",
+                "anxiety symptoms",
+                "behavioral changes",
+                "mood changes",
+                "suicidal thoughts",
+                "teen anxiety signs",
+                "mental distress",
+                "emotional changes",
+                "body changes in girls"
+            ]
+        },
+        {
+            "category": "TREATMENT",
+            "terms": [
+                "pediatric mental treatment",
+                "anxiety therapy",
+                "behavioral management",
+                "suicide prevention",
+                "teen mental health care",
+                "family counseling",
+                "mental health support",
+                "PDD therapy",
+                "mental health care"
+            ]
+        }
+    ]
+}
