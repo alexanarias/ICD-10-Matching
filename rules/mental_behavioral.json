@@ -1,60 +1,65 @@
 {
-    "name": "Mental Health and Behavioral Therapy",
-    "rules": [
-        {
-            "category": "DIAGNOSIS",
-            "terms": [
-                "Generalized Anxiety Disorder",
-                "GAD anxiety in children",
-                "anxiety in teens",
-                "teen mental health",
-                "mental changes during puberty",
-                "LGBTQ+ mental health",
-                "suicide risk factors",
-                "behavioral disorders"
-            ]
-        },
-        {
-            "category": "PROCEDURE",
-            "terms": [
-                "mental health assessment",
-                "anxiety screening",
-                "behavioral therapy",
-                "suicide risk assessment",
-                "teen counseling",
-                "family therapy",
-                "group therapy",
-                "psychological evaluation",
-                "mental health monitoring"
-            ]
-        },
-        {
-            "category": "SYMPTOMS",
-            "terms": [
-                "worry and nervousness",
-                "anxiety symptoms",
-                "behavioral changes",
-                "mood changes",
-                "suicidal thoughts",
-                "teen anxiety signs",
-                "mental distress",
-                "emotional changes",
-                "body changes in girls"
-            ]
-        },
-        {
-            "category": "TREATMENT",
-            "terms": [
-                "pediatric mental treatment",
-                "anxiety therapy",
-                "behavioral management",
-                "suicide prevention",
-                "teen mental health care",
-                "family counseling",
-                "mental health support",
-                "PDD therapy",
-                "mental health care"
-            ]
-        }
-    ]
+  "name": "mental_behavioral",
+  "description": "Rules for mental behavioral domain",
+  "rules": [
+    {
+      "category": "DIAGNOSIS",
+      "terms": [
+        "bipolar disorder",
+        "generalized anxiety disorder",
+        "mood disorder treatment",
+        "mood disorders",
+        "mood disorders in new mothers",
+        "persistent depressive disorder",
+        "seasonal affective disorder"
+      ]
+    },
+    {
+      "category": "GENERAL",
+      "terms": [
+        "antidepressants",
+        "anxiety in children",
+        "anxiety in teens",
+        "children mental health",
+        "depression",
+        "depression after delivery",
+        "depression in older adults",
+        "elderly mental health",
+        "gad",
+        "geriatric depression",
+        "mania",
+        "maternal mental health",
+        "mood stabilizers",
+        "postpartum depression",
+        "ppd",
+        "suicide risk in seniors",
+        "teen mental health",
+        "worry and nervousness"
+      ]
+    },
+    {
+      "category": "TREATMENT",
+      "terms": [
+        "depression treatment",
+        "pediatric anxiety treatment",
+        "ppd therapy",
+        "ppd treatment",
+        "talk therapy"
+      ]
+    },
+    {
+      "category": "CARE",
+      "terms": [
+        "gad care",
+        "older adult care",
+        "postpartum care"
+      ]
+    },
+    {
+      "category": "SYMPTOMS",
+      "terms": [
+        "depression symptoms"
+      ]
+    }
+  ]
 }

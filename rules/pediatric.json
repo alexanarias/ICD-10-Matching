@@ -1,61 +1,47 @@
 {
-    "name": "Pediatric Care",
-    "rules": [
-        {
-            "category": "DIAGNOSIS",
-            "terms": [
-                "autism spectrum disorder",
-                "ASD autism",
-                "early signs of autism",
-                "pediatric respiratory infection",
-                "newborn jaundice",
-                "breast milk jaundice",
-                "jaundice",
-                "hydrocele",
-                "umbilical infection"
-            ]
-        },
-        {
-            "category": "PROCEDURE",
-            "terms": [
-                "child mental health assessment",
-                "autism screening",
-                "behavioral therapy for autism",
-                "speech therapy for autism",
-                "pediatric ear surgery",
-                "hydrocele surgery",
-                "newborn healthcare",
-                "child neuropsych test",
-                "phototherapy for jaundice"
-            ]
-        },
-        {
-            "category": "SYMPTOMS",
-            "terms": [
-                "autism symptoms",
-                "autism sibling impact",
-                "stress in autism caregiving",
-                "jaundice symptoms",
-                "umbilical infection signs",
-                "pediatric respiratory symptoms",
-                "developmental delays",
-                "behavioral changes"
-            ]
-        },
-        {
-            "category": "TREATMENT",
-            "terms": [
-                "autism treatment",
-                "ASD care",
-                "autism therapy management",
-                "ASD treatment",
-                "autism family support",
-                "pediatric mental health care",
-                "hydrocele treatment",
-                "jaundice management",
-                "multivitamin drops for care",
-                "umbilical newborn care"
-            ]
-        }
-    ]
+  "name": "pediatric",
+  "description": "Rules for pediatric domain",
+  "rules": [
+    {
+      "category": "GENERAL",
+      "terms": [
+        "adolescent health",
+        "body changes in girls",
+        "breast development",
+        "breast growth",
+        "estrogen",
+        "hormone changes",
+        "menstrual cramps",
+        "menstrual cycle",
+        "menstrual hygiene",
+        "menstrual periods",
+        "menstrual supplies",
+        "menstruation",
+        "mental changes during puberty",
+        "period supplies",
+        "puberty",
+        "puberty in girls",
+        "sexual health in puberty"
+      ]
+    },
+    {
+      "category": "CARE",
+      "terms": [
+        "puberty care"
+      ]
+    },
+    {
+      "category": "SYMPTOMS",
+      "terms": [
+        "puberty symptoms"
+      ]
+    },
+    {
+      "category": "TREATMENT",
+      "terms": [
+        "acne treatment",
+        "puberty treatment"
+      ]
+    }
+  ]
 }
