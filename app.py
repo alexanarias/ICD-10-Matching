@@ -18,6 +18,7 @@ import os
 import fitz
 from collections import defaultdict
 import re
+from extract_subect import extract_subject_from_title, medical_abbreviations
 
 app = FastAPI(
     title="Medical Text Analysis API",
@@ -129,14 +130,13 @@ def detect_document_domain(text: str) -> str:
     return None
 
 def get_intro_between_h1_and_h2(pdf_bytes: bytes) -> str:
-    """Extract meaningful text from the first page of a PDF.
+    """Extract text between H1 and H2 tags from a PDF.
     
-    This function attempts to extract text in a smart way:
+    This function:
     1. Gets all text blocks from the first page
-    2. Identifies the title (largest font)
-    3. Includes the title in the output
-    4. Collects all text after the title that's not a header
-    5. Removes periods from the text
+    2. Identifies H1 (largest font size) as the title (can be multiple lines)
+    3. Finds the next largest font size as potential H2 or image/section break
+    4. Returns the title (H1) and text between H1 and first section break
     """
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
     if len(doc) == 0:
@@ -150,60 +150,117 @@ def get_intro_between_h1_and_h2(pdf_bytes: bytes) -> str:
     # Collect all text spans with their properties
     spans_with_props = []
     for block in blocks:
+        # Skip image blocks
+        if block.get("type") == 1:  # Image block
+            spans_with_props.append({
+                "text": "IMAGE_BREAK",
+                "size": 0,
+                "y": block["bbox"][1],
+                "block_id": id(block),
+                "is_image": True
+            })
+            continue
+            
         for line in block.get("lines", []):
             for span in line.get("spans", []):
                 text = span["text"].strip()
                 if text:
-                    # Remove periods from the text
-                    text = text.replace('.', '')
                     spans_with_props.append({
                         "text": text,
                         "size": span["size"],
                         "font": span["font"],
                         "color": span["color"],
-                        "flags": span["flags"]  # Bold, italic, etc.
+                        "flags": span["flags"],
+                        "y": line["bbox"][1],
+                        "block_id": id(block),
+                        "is_image": False,
+                        "bbox": line["bbox"]  # Store full bounding box for better spacing detection
                     })
     
     if not spans_with_props:
         doc.close()
         return ""
 
-    # Find the title (largest font size)
-    sizes = sorted({s["size"] for s in spans_with_props}, reverse=True)
-    title_size = sizes[0]
+    # Sort spans by Y position to maintain reading order
+    spans_with_props.sort(key=lambda x: x["y"])
 
-    # Collect meaningful text including title
-    content = []
-    title_found = False
-    current_section = []
-    title_text = ""
+    # Find unique font sizes and sort them
+    text_sizes = sorted({s["size"] for s in spans_with_props if not s.get("is_image")}, reverse=True)
+    if len(text_sizes) < 2:
+        doc.close()
+        return " ".join(s["text"] for s in spans_with_props if not s.get("is_image"))
+
+    # H1 is the largest font size
+    h1_size = text_sizes[0]
+
+    # Extract title and content
+    title_parts = []
+    content_blocks = []
+    current_block = []
+    found_h1 = False
+    last_block_id = None
+    last_y = None
+    last_bbox = None
 
     for span in spans_with_props:
         text = span["text"]
-        size = span["size"]
+        size = span.get("size", 0)
+        block_id = span["block_id"]
+        y = span["y"]
+        is_image = span.get("is_image", False)
+        bbox = span.get("bbox")
 
-        if size == title_size and not title_found:
-            title_text = text
-            title_found = True
+        # Handle H1 (title)
+        if not is_image and size >= h1_size * 0.95:
+            if not title_parts or block_id == last_block_id:
+                title_parts.append(text)
+                found_h1 = True
+                last_block_id = block_id
             continue
 
-        if title_found:
-            # Skip if it looks like a header (significantly larger than average text)
-            if size > title_size * 0.7:
-                if current_section:
-                    content.append(" ".join(current_section))
-                    current_section = []
+        # After title, collect content until we hit an image or a clear section break
+        if found_h1:
+            if is_image:
+                # Stop at first image
+                if current_block:
+                    content_blocks.append(current_block)
+                break
+            elif text.startswith("There are") or text.startswith("These are") or text.startswith("Types of"):
+                # Stop at section transitions
+                if current_block:
+                    content_blocks.append(current_block)
+                break
             else:
-                current_section.append(text)
+                # Check if this is a continuation of the current block or a new block
+                if last_bbox is not None:
+                    y_gap = bbox[1] - last_bbox[3]  # Distance between bottom of last line and top of current line
+                    if y_gap > 15:  # Large gap indicates new paragraph
+                        if current_block:
+                            content_blocks.append(current_block)
+                            current_block = []
+                
+                current_block.append(text)
+                last_bbox = bbox
+                last_y = y
 
-    if current_section:
-        content.append(" ".join(current_section))
-
-    # Combine title with content
-    final_text = title_text + " - " + " ".join(content) if content else title_text
+    # Add any remaining block
+    if current_block:
+        content_blocks.append(current_block)
 
     doc.close()
-    return final_text.strip()
+
+    # Combine title parts and content blocks
+    result = " ".join(title_parts) + "\n\n"
+    
+    # Join blocks with appropriate spacing
+    content_text = []
+    for block in content_blocks:
+        block_text = " ".join(block)
+        if block_text.strip():
+            content_text.append(block_text)
+    
+    result += "\n\n".join(content_text)
+    return result
 
 def extract_whole_content(pdf_bytes: bytes) -> str:
     """Extract all text content from a PDF while preserving structure.
@@ -326,6 +383,9 @@ def extract_medical_terms(text: str, domain: str = None) -> list:
     # Detect domain if not provided
     if domain is None:
         domain = detect_document_domain(preprocessed_text)
+        # If still None, use general_medical as default
+        if domain is None:
+            domain = "general_medical"
     
     # Load and add rules
     rules = load_rules_from_json(domain)
@@ -421,6 +481,43 @@ def match_icd10_codes(term: str) -> List[Dict]:
         import traceback
         return []
 
+def extract_subjects_from_pdf(pdf_bytes: bytes) -> Dict[str, str]:
+    """Extract subjects from PDF title and first paragraph"""
+    # Get title and first paragraph
+    intro_text = get_intro_between_h1_and_h2(pdf_bytes)
+    if not intro_text:
+        return {"error": "Could not extract text from PDF"}
+    
+    # Split into lines to get title
+    lines = intro_text.split('\n')
+    if not lines:
+        return {"error": "No text found in PDF"}
+    
+    title = lines[0].strip()
+    
+    # Extract subject from title
+    title_subject = extract_subject_from_title(title, get_full_form=True)
+    
+    # Look for abbreviations in the first paragraph
+    first_paragraph = ' '.join(lines[1:]).strip()
+    found_abbreviations = []
+    
+    for abbrev, full_form in medical_abbreviations.items():
+        if abbrev in first_paragraph and f"{abbrev} (" not in first_paragraph:
+            # Check if the full form appears before the abbreviation
+            full_form_pos = first_paragraph.lower().find(full_form.lower())
+            abbrev_pos = first_paragraph.find(abbrev)
+            
+            if full_form_pos != -1 and full_form_pos < abbrev_pos:
+                found_abbreviations.append(f"{abbrev} ({full_form})")
+    
+    return {
+        "title": title,
+        "title_subject": title_subject,
+        "found_abbreviations": found_abbreviations,
+        "first_paragraph": first_paragraph
+    }
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     """Serve the main HTML page"""
@@ -438,9 +535,11 @@ async def analyze_pdf(file: UploadFile = File(...)):
         # Read PDF content
         contents = await file.read()
         
-        text = extract_whole_content(contents)
+        # Extract subjects first
+        subjects_info = extract_subjects_from_pdf(contents)
         
-        # Extract medical terms
+        # Extract medical terms from whole content
+        text = get_intro_between_h1_and_h2(contents)
         medical_terms = extract_medical_terms(text)
         
         # Match ICD-10 codes for each term
@@ -457,6 +556,10 @@ async def analyze_pdf(file: UploadFile = File(...)):
         
         return JSONResponse(content={
             "filename": file.filename,
+            "title": subjects_info["title"],
+            "title_subject": subjects_info["title_subject"],
+            "found_abbreviations": subjects_info["found_abbreviations"],
+            "first_paragraph": subjects_info["first_paragraph"],
             "total_terms": len(medical_terms),
             "results": results
         })
