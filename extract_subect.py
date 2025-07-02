@@ -111,6 +111,20 @@ def extract_subject_from_title(title: str, get_full_form: bool = False) -> str:
         'All about'
     ]
     
+    # Treatment-related terms to preserve
+    treatment_terms = [
+        'surgery',
+        'surgical',
+        'operation',
+        'procedure',
+        'treatment',
+        'therapy',
+        'management',
+        'options',
+        'approaches',
+        'interventions'
+    ]
+    
     # Remove prefixes
     lower_title = title.lower()
     for prefix in prefixes_to_remove:
@@ -118,21 +132,48 @@ def extract_subject_from_title(title: str, get_full_form: bool = False) -> str:
             title = title[len(prefix):].strip()
             break
     
-    # Remove common words that don't add meaning
+    # Remove common words that don't add meaning, but preserve treatment-related terms
     words_to_remove = [
         'a', 'an', 'the', 'your', 'my', 'our', 'their',
-        'this', 'that', 'these', 'those', 'some', 'with'
+        'this', 'that', 'these', 'those', 'some', 'with',
+        'for', 'to', 'in', 'on', 'at', 'by', 'and'
     ]
     
     # Split into words and filter
     words = title.split()
     filtered_words = []
-    for word in words:
-        if word.lower() not in words_to_remove:
+    has_treatment_term = any(term in lower_title for term in treatment_terms)
+    
+    for i, word in enumerate(words):
+        word_lower = word.lower()
+        # Keep the word if:
+        # 1. It's a treatment term, or
+        # 2. It's not in words_to_remove, or
+        # 3. It's part of a medical term (check next/previous word)
+        if (word_lower in treatment_terms or 
+            word_lower not in words_to_remove or
+            (i > 0 and words[i-1].lower() + " " + word_lower in lower_title) or
+            (i < len(words)-1 and word_lower + " " + words[i+1].lower() in lower_title)):
             filtered_words.append(word)
     
     # Rejoin the words
     subject = ' '.join(filtered_words)
+    
+    # Special handling for surgical/treatment options
+    if has_treatment_term:
+        # Make sure we preserve the treatment type with the condition
+        treatment_parts = []
+        condition_parts = []
+        
+        for word in filtered_words:
+            if word.lower() in treatment_terms:
+                treatment_parts.append(word)
+            else:
+                condition_parts.append(word)
+        
+        if treatment_parts and condition_parts:
+            # Combine them in a meaningful way
+            subject = ' '.join(treatment_parts) + ' for ' + ' '.join(condition_parts)
     
     # Handle common medical abbreviations
     if get_full_form:
@@ -141,6 +182,9 @@ def extract_subject_from_title(title: str, get_full_form: bool = False) -> str:
             pattern = r'\b' + re.escape(abbrev) + r'\b'
             if re.search(pattern, subject):
                 subject = re.sub(pattern, full_form, subject)
+    
+    # Special handling for specific medical terms
+    subject = subject.replace('basal joint', 'carpometacarpal joint')
     
     return subject.strip()
 
