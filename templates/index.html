@@ -38,11 +38,11 @@
             color: #0066cc;
         }
 
-        .abbreviation {
+        .keyword-tag {
             background-color: #e2e3e5;
             padding: 2px 6px;
             border-radius: 4px;
-            margin: 0 2px;
+            margin: 2px;
             display: inline-block;
         }
 
@@ -66,6 +66,18 @@
             padding: 10px;
             background-color: #fff;
             border-left: 3px solid #0066cc;
+        }
+
+        .confidence-high {
+            color: #28a745;
+        }
+
+        .confidence-medium {
+            color: #ffc107;
+        }
+
+        .confidence-low {
+            color: #dc3545;
         }
     </style>
 </head>
@@ -93,8 +105,8 @@
 
                 <div id="results" class="mt-4" style="display: none;">
                     <div class="alert alert-info">
-                        <strong>File: </strong><span id="filename"></span><br>
-                        <strong>Total Terms Found: </strong><span id="totalTerms"></span>
+                        <strong>File: </strong><span id="filename"></span>
+                        <div id="analysisSummary" class="mt-2"></div>
                     </div>
 
                     <!-- Subject Information Section -->
@@ -102,9 +114,9 @@
                         <div class="subject-title">Document Analysis</div>
                         <div><strong>Title:</strong> <span id="docTitle"></span></div>
                         <div><strong>Main Subject:</strong> <span id="titleSubject"></span></div>
-                        <div id="abbreviationsSection" style="display: none;">
-                            <strong>Found Abbreviations:</strong>
-                            <div id="foundAbbreviations" class="mt-2"></div>
+                        <div id="keywordsSection" class="mt-2">
+                            <strong>Extracted Keywords:</strong>
+                            <div id="extractedKeywords" class="mt-2"></div>
                         </div>
                         <div class="first-paragraph mt-3">
                             <strong>First Paragraph:</strong>
@@ -112,18 +124,26 @@
                         </div>
                     </div>
 
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Term</th>
-                                <th>Type</th>
-                                <th>ICD-10 Matches</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="resultsTable"></tbody>
-                    </table>
+                    <!-- ICD-10 Matches Section -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">ICD-10 Code Matches</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="highConfidenceMatches">
+                                <h6 class="confidence-high">High Confidence Matches</h6>
+                                <div class="matches-container mb-3"></div>
+                            </div>
+                            <div id="mediumConfidenceMatches">
+                                <h6 class="confidence-medium">Medium Confidence Matches</h6>
+                                <div class="matches-container mb-3"></div>
+                            </div>
+                            <div id="lowConfidenceMatches">
+                                <h6 class="confidence-low">Low Confidence Matches</h6>
+                                <div class="matches-container"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -135,11 +155,9 @@
 
             const loading = document.getElementById('loading');
             const results = document.getElementById('results');
-            const resultsTable = document.getElementById('resultsTable');
 
             loading.style.display = 'block';
             results.style.display = 'none';
-            resultsTable.innerHTML = '';
 
             const formData = new FormData();
             formData.append('file', document.getElementById('pdfFile').files[0]);
@@ -156,77 +174,45 @@
 
                 const data = await response.json();
 
-                // Display file info
+                // Display file info and analysis summary
                 document.getElementById('filename').textContent = data.filename;
-                document.getElementById('totalTerms').textContent = data.total_terms;
+                document.getElementById('analysisSummary').innerHTML = `
+                    <strong>Keywords Found:</strong> ${data.analysis_summary.total_keywords_found}<br>
+                    <strong>Total Matches:</strong> ${data.analysis_summary.total_matches_found}<br>
+                    <strong>High Confidence Matches:</strong> ${data.analysis_summary.high_confidence_count}
+                `;
 
                 // Display subject information
                 document.getElementById('docTitle').textContent = data.title || 'Not found';
                 document.getElementById('titleSubject').textContent = data.title_subject || 'Not found';
                 document.getElementById('firstParagraph').textContent = data.first_paragraph || 'Not found';
 
-                // Display abbreviations if found
-                const abbreviationsSection = document.getElementById('abbreviationsSection');
-                const foundAbbreviations = document.getElementById('foundAbbreviations');
-                if (data.found_abbreviations && data.found_abbreviations.length > 0) {
-                    foundAbbreviations.innerHTML = data.found_abbreviations
-                        .map(abbr => `<span class="abbreviation">${abbr}</span>`)
-                        .join(' ');
-                    abbreviationsSection.style.display = 'block';
-                } else {
-                    abbreviationsSection.style.display = 'none';
+                // Display extracted keywords
+                const keywordsContainer = document.getElementById('extractedKeywords');
+                keywordsContainer.innerHTML = data.extracted_keywords
+                    .map(keyword => `<span class="keyword-tag">${keyword}</span>`)
+                    .join('');
+
+                // Display ICD-10 matches by confidence level
+                function displayMatches(matches, containerId) {
+                    const container = document.querySelector(`#${containerId} .matches-container`);
+                    container.innerHTML = matches.map(match => `
+                        <div class="match-details">
+                            <span class="icd-code">${match.code}</span>
+                            <br>
+                            ${match.description}
+                            <br>
+                            <small class="text-muted">
+                                Match type: ${match.match_type} | 
+                                Correlation: ${(match.correlation_score * 100).toFixed(0)}%
+                            </small>
+                        </div>
+                    `).join('') || '<div class="text-muted">No matches found</div>';
                 }
 
-                // Display results
-                data.results.forEach(result => {
-                    const row = document.createElement('tr');
-
-                    // Term
-                    row.innerHTML += `<td>${result.term}</td>`;
-
-                    // Type
-                    row.innerHTML += `<td>${result.type}</td>`;
-
-                    // ICD-10 Matches
-                    let matchesHtml = '';
-                    if (result.icd10_matches && result.icd10_matches.length > 0) {
-                        matchesHtml = result.icd10_matches.map(match => `
-                            <div class="match-details">
-                                <span class="icd-code">${match.code}</span>
-                                <br>
-                                ${match.description}
-                                <br>
-                                <small class="text-muted">Match type: ${match.match_type}</small>
-                            </div>
-                        `).join('');
-                    } else {
-                        matchesHtml = '<div class="text-muted">No matches found</div>';
-                    }
-                    row.innerHTML += `<td>${matchesHtml}</td>`;
-
-                    // Status
-                    row.innerHTML += `
-                        <td>
-                            <span class="status-${result.validation_status.toLowerCase()}">
-                                ${result.validation_status}
-                            </span>
-                        </td>
-                    `;
-
-                    // Actions
-                    row.innerHTML += `
-                        <td>
-                            <button class="btn btn-sm btn-success me-1" onclick="updateStatus(this, 'validated')">
-                                Validate
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="updateStatus(this, 'excluded')">
-                                Exclude
-                            </button>
-                        </td>
-                    `;
-
-                    resultsTable.appendChild(row);
-                });
+                displayMatches(data.icd10_matches.high_confidence, 'highConfidenceMatches');
+                displayMatches(data.icd10_matches.medium_confidence, 'mediumConfidenceMatches');
+                displayMatches(data.icd10_matches.low_confidence, 'lowConfidenceMatches');
 
                 results.style.display = 'block';
             } catch (error) {
@@ -236,14 +222,6 @@
                 loading.style.display = 'none';
             }
         });
-
-        function updateStatus(button, status) {
-            const statusCell = button.closest('tr').querySelector('td:nth-child(4)');
-            const statusSpan = statusCell.querySelector('span');
-
-            statusSpan.className = `status-${status}`;
-            statusSpan.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-        }
     </script>
 </body>
 

@@ -1,4 +1,5 @@
 import spacy
+import re
 
 # Load spaCy English model
 nlp = spacy.load("en_core_web_sm")
@@ -36,7 +37,30 @@ medical_abbreviations = {
     "PD": "peritoneal dialysis",
     "ESRD": "end-stage renal disease",
     "PPD": "postpartum depression",
-    "CSF": "cerebrospinal fluid"
+    "CSF": "cerebrospinal fluid",
+    "ADHD": "Attention Deficit Hyperactivity Disorder",
+    "AIDS": "Acquired Immunodeficiency Syndrome",
+    "ALS": "Amyotrophic Lateral Sclerosis",
+    "ARDS": "Acute Respiratory Distress Syndrome",
+    "BP": "Blood Pressure",
+    "CHF": "Congestive Heart Failure",
+    "CVD": "Cardiovascular Disease",
+    "DM": "Diabetes Mellitus",
+    "EKG": "Electrocardiogram",
+    "GERD": "Gastroesophageal Reflux Disease",
+    "GI": "Gastrointestinal",
+    "HIV": "Human Immunodeficiency Virus",
+    "HTN": "Hypertension",
+    "IBD": "Inflammatory Bowel Disease",
+    "IBS": "Irritable Bowel Syndrome",
+    "MI": "Myocardial Infarction",
+    "MS": "Multiple Sclerosis",
+    "OCD": "Obsessive-Compulsive Disorder",
+    "PE": "Pulmonary Embolism",
+    "PTSD": "Post-Traumatic Stress Disorder",
+    "RA": "Rheumatoid Arthritis",
+    "TB": "Tuberculosis",
+    "UTI": "Urinary Tract Infection"
 }
 
 def remove_leading_article(phrase):
@@ -51,55 +75,74 @@ def remove_title_prefix(text):
         return ' '.join(text.split()[1:])
     return text
 
-def extract_subject_from_title(title, get_full_form=False):
-    # Remove any text after a colon
-    main_part = title.split(':')[0].strip()
+def extract_subject_from_title(title: str, get_full_form: bool = False) -> str:
+    """Extract the medical subject from a document title.
     
-    # Check for "for" pattern first - it's a special case
-    if " for " in main_part:
-        parts = main_part.split(" for ")
-        if len(parts) >= 2:
-            # Take everything after "for"
-            return parts[1].strip()
+    Args:
+        title: The document title
+        get_full_form: Whether to return the full form of abbreviations
+        
+    Returns:
+        str: The extracted subject
+    """
+    if not title:
+        return ""
+        
+    # Clean the title
+    title = title.strip()
     
-    # Remove common title prefixes like "Understanding", "Treating", etc.
-    main_part = remove_title_prefix(main_part)
+    # Common title prefixes to remove
+    prefixes_to_remove = [
+        'Caring for',
+        'Understanding',
+        'About',
+        'What is',
+        'Guide to',
+        'Information on',
+        'Living with',
+        'Managing',
+        'Treatment of',
+        'Treating',
+        'Dealing with',
+        'Coping with',
+        'Overview of',
+        'Introduction to',
+        'Facts about',
+        'All about'
+    ]
     
-    # Process with spaCy
-    doc = nlp(main_part)
-    
-    # Look for abbreviations first
-    for token in doc:
-        if token.text in medical_abbreviations:
-            if get_full_form:
-                return f"{token.text} ({medical_abbreviations[token.text]})"
-            return token.text
-    
-    # Handle other context words
-    for word, action in context_words.items():
-        if f" {word} " in main_part.lower():
-            parts = main_part.split(f" {word} ")
-            if action == "before":
-                main_part = parts[0].strip()
+    # Remove prefixes
+    lower_title = title.lower()
+    for prefix in prefixes_to_remove:
+        if lower_title.startswith(prefix.lower()):
+            title = title[len(prefix):].strip()
             break
     
-    # Process the cleaned text
-    doc = nlp(main_part)
+    # Remove common words that don't add meaning
+    words_to_remove = [
+        'a', 'an', 'the', 'your', 'my', 'our', 'their',
+        'this', 'that', 'these', 'those', 'some', 'with'
+    ]
     
-    # Get all noun phrases
-    noun_phrases = []
-    for chunk in doc.noun_chunks:
-        # Remove articles from the beginning
-        text = remove_leading_article(chunk.text)
-        if text:
-            noun_phrases.append(text)
+    # Split into words and filter
+    words = title.split()
+    filtered_words = []
+    for word in words:
+        if word.lower() not in words_to_remove:
+            filtered_words.append(word)
     
-    if noun_phrases:
-        # Get the longest noun phrase
-        return max(noun_phrases, key=lambda x: len(x.split())).strip()
+    # Rejoin the words
+    subject = ' '.join(filtered_words)
     
-    # If no noun phrases found, return the cleaned main part
-    return remove_leading_article(main_part.strip())
+    # Handle common medical abbreviations
+    if get_full_form:
+        for abbrev, full_form in medical_abbreviations.items():
+            # Only replace if it's a standalone abbreviation
+            pattern = r'\b' + re.escape(abbrev) + r'\b'
+            if re.search(pattern, subject):
+                subject = re.sub(pattern, full_form, subject)
+    
+    return subject.strip()
 
 # Test cases
 test_titles = [

@@ -43,7 +43,17 @@ nlp = medspacy.load()
 
 # Load ICD-10 codes from CSV
 def load_icd10_codes():
+    """Load and preprocess ICD-10 codes from CSV file"""
     icd10_df = pd.read_csv("diagnosis.csv", encoding='utf-8')
+    
+    # Create normalized versions of descriptions for better matching
+    icd10_df['normalized_short'] = icd10_df['ShortDescription'].str.lower().str.strip()
+    icd10_df['normalized_long'] = icd10_df['LongDescription'].str.lower().str.strip()
+    
+    # Create word sets for each description
+    icd10_df['short_words'] = icd10_df['normalized_short'].fillna('').apply(lambda x: set(x.split()))
+    icd10_df['long_words'] = icd10_df['normalized_long'].fillna('').apply(lambda x: set(x.split()))
+    
     return icd10_df
 
 # Initialize ICD-10 codes
@@ -362,11 +372,68 @@ def load_rules_from_json(domain: str) -> list:
         return []
     return rules
 
+def extract_keywords_from_paragraph(text: str) -> List[str]:
+    """Extract specific medical terms, symptoms, and conditions from text using defined rules
+    
+    Args:
+        text (str): The paragraph text to analyze
+        
+    Returns:
+        List[str]: List of specific medical terms and symptoms
+    """
+    keywords = []
+    
+    # Clean and normalize text
+    text = text.lower().strip()
+    
+    # Load rules from all JSON files in rules directory
+    rules_dir = Path("rules")
+    for rule_file in rules_dir.glob("*.json"):
+        try:
+            with open(rule_file, 'r') as f:
+                rule_data = json.load(f)
+                # Process each category in the rules
+                for category in rule_data['rules']:
+                    category_name = category['category']
+                    # Match each term in the category
+                    for term in category['terms']:
+                        # Create word boundary pattern
+                        pattern = r'\b' + re.escape(term.lower()) + r'(?:s|es)?\b'
+                        if re.search(pattern, text):
+                            keywords.append(term)
+        except Exception as e:
+            print(f"Error loading rules from {rule_file}: {str(e)}")
+            continue
+    
+    # Clean up extracted keywords
+    cleaned_keywords = []
+    for keyword in keywords:
+        # Remove leading/trailing special characters and spaces
+        keyword = re.sub(r'^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$', '', keyword)
+        # Remove extra whitespace
+        keyword = ' '.join(keyword.split())
+        # Only keep keywords with 2 or more characters
+        if len(keyword) >= 2:
+            cleaned_keywords.append(keyword)
+    
+    # Remove duplicates while preserving order
+    seen = set()
+    unique_keywords = []
+    for keyword in cleaned_keywords:
+        if keyword not in seen:
+            seen.add(keyword)
+            unique_keywords.append(keyword)
+    
+    return unique_keywords
+
 def extract_medical_terms(text: str, domain: str = None) -> list:
     """Extract medical terms using medspacy"""
     # Preprocess the text
     preprocessed_text = preprocess_text(text)
     print(preprocessed_text)
+    
+    # Extract keywords first
+    keywords = extract_keywords_from_paragraph(preprocessed_text)
     
     # Remove default pipelines that might interfere
     if "medspacy_pyrush" in nlp.pipe_names:
@@ -397,7 +464,17 @@ def extract_medical_terms(text: str, domain: str = None) -> list:
     # Track unique terms
     unique_terms = {}
     
-    # Process all entities
+    # Add extracted keywords as terms
+    for keyword in keywords:
+        term_key = (keyword.lower(), 'SYMPTOM')
+        if term_key not in unique_terms:
+            unique_terms[term_key] = {
+                'text': keyword,
+                'label': 'SYMPTOM',
+                'confidence': 0.8
+            }
+    
+    # Process all entities from medspacy
     for ent in doc.ents:
         # Create a unique key for the term
         term_key = (ent.text.lower(), ent.label_)
@@ -425,8 +502,6 @@ def extract_medical_terms(text: str, domain: str = None) -> list:
                 unique_terms[term_key] = {
                     'text': ent.text,
                     'label': ent.label_,
-                    'start': ent.start_char,
-                    'end': ent.end_char,
                     'confidence': confidence
                 }
     
@@ -436,49 +511,307 @@ def extract_medical_terms(text: str, domain: str = None) -> list:
     
     return entities
 
+def normalize_medical_term(term: str) -> List[str]:
+    """Normalize medical term and generate variants for matching
+    
+    Args:
+        term (str): Medical term to normalize
+        
+    Returns:
+        List[str]: List of normalized term variants
+    """
+    if not term:
+        return []
+        
+    term = term.lower().strip()
+    variants = [term]
+    
+    # Common word replacements in medical terminology
+    replacements = {
+        'disorder': ['disease', 'condition', 'syndrome'],
+        'disease': ['disorder', 'condition', 'syndrome'],
+        'syndrome': ['disorder', 'disease', 'condition'],
+        'acute': ['chronic', 'recurrent'],
+        'chronic': ['acute', 'recurrent'],
+        'recurring': ['recurrent', 'chronic'],
+        'inability': ['impairment', 'difficulty'],
+        'impairment': ['inability', 'difficulty'],
+        'surgery': ['surgical procedure', 'operation', 'surgical treatment'],
+        'surgical': ['surgery', 'operative'],
+        'arthritis': ['arthritic condition', 'joint inflammation'],
+        'joint': ['articular'],
+        'basal': ['base', 'basilar']
+    }
+    
+    # Generate variants with common word replacements
+    words = term.split()
+    for i, word in enumerate(words):
+        if word in replacements:
+            for replacement in replacements[word]:
+                new_words = words.copy()
+                new_words[i] = replacement
+                variants.append(' '.join(new_words))
+    
+    # Handle compound terms
+    if 'basal joint' in term:
+        variants.append('carpometacarpal joint')
+        variants.append('cmc joint')
+        variants.append('thumb joint')
+        variants.append('thumb base joint')
+    
+    if 'joint arthritis' in term:
+        variants.append('osteoarthritis')
+        variants.append('degenerative joint disease')
+        variants.append('arthritic joint')
+    
+    # Handle surgical terms
+    if any(word in term for word in ['surgery', 'surgical', 'operation']):
+        surgical_variants = [
+            'surgical treatment',
+            'surgical management',
+            'operative treatment',
+            'surgical procedure',
+            'operative procedure'
+        ]
+        for variant in surgical_variants:
+            if 'options' in term:
+                variants.append(f"{variant} options")
+            else:
+                variants.append(variant)
+    
+    # Remove common medical prefixes/suffixes for additional variants
+    prefixes = ['acute ', 'chronic ', 'recurrent ', 'severe ']
+    suffixes = [' disorder', ' disease', ' syndrome', ' condition', ' options', ' treatment']
+    
+    # Generate core medical term variants
+    for prefix in prefixes:
+        if term.startswith(prefix):
+            base_term = term[len(prefix):]
+            variants.append(base_term)
+            # Also add other prefixes to the base term
+            for other_prefix in prefixes:
+                if other_prefix != prefix:
+                    variants.append(other_prefix + base_term)
+    
+    for suffix in suffixes:
+        if term.endswith(suffix):
+            base_term = term[:-len(suffix)]
+            variants.append(base_term)
+            # Also add other suffixes to the base term
+            for other_suffix in suffixes:
+                if other_suffix != suffix:
+                    variants.append(base_term + other_suffix)
+    
+    # Clean and normalize variants
+    cleaned_variants = set()
+    for variant in variants:
+        # Remove extra whitespace
+        cleaned = ' '.join(variant.split())
+        # Remove any empty strings
+        if cleaned:
+            cleaned_variants.add(cleaned)
+    
+    return list(cleaned_variants)
+
 def match_icd10_codes(term: str) -> List[Dict]:
-    """Match medical terms to ICD-10 codes"""
+    """Match medical terms to ICD-10 codes with improved accuracy and coverage
+    
+    Args:
+        term (str): The medical term to match against ICD-10 codes
+        
+    Returns:
+        List[Dict]: List of matching ICD-10 codes with their descriptions and match types
+    """
+    if not term or not isinstance(term, str):
+        return []
+        
     try:
         matches = []
+        term = term.lower().strip()
         
-        try:
-            # Search in both short and long descriptions
-            exact_matches_short = icd10_data[icd10_data['ShortDescription'].str.lower() == term.lower()]
-            exact_matches_long = icd10_data[icd10_data['LongDescription'].str.lower() == term.lower()]
-            exact_matches = pd.concat([exact_matches_short, exact_matches_long]).drop_duplicates()
-            
-            for _, row in exact_matches.iterrows():
-                match = {
-                    "code": str(row['CodeWithSeparator']),
-                    "description": str(row['LongDescription']),
-                    "match_type": "exact"
-                }
-                matches.append(match)
-            
-            # If no exact matches, search for partial matches
-            if not matches:
-                # Search in both descriptions using case-insensitive partial matching
-                partial_matches_short = icd10_data[icd10_data['ShortDescription'].str.lower().str.contains(term.lower(), na=False)]
-                partial_matches_long = icd10_data[icd10_data['LongDescription'].str.lower().str.contains(term.lower(), na=False)]
-                partial_matches = pd.concat([partial_matches_short, partial_matches_long]).drop_duplicates()
+        # Generate variants for better matching
+        term_variants = normalize_medical_term(term)
+        all_term_words = set()
+        for variant in term_variants:
+            all_term_words.update(variant.split())
+        
+        # 1. Direct exact matches with variants
+        exact_matches = icd10_data[
+            icd10_data['normalized_long'].isin(term_variants) |
+            icd10_data['normalized_short'].isin(term_variants)
+        ]
+        
+        for _, row in exact_matches.iterrows():
+            matches.append({
+                "code": str(row['CodeWithSeparator']),
+                "description": str(row['LongDescription']),
+                "match_type": "exact",
+                "confidence": 1.0
+            })
+        
+        # 2. Specific handling for surgical/treatment terms
+        if any(surg_term in term.lower() for surg_term in ['surgery', 'surgical', 'operation', 'procedure']):
+            # Look for procedure codes related to the condition
+            condition_terms = [w for w in term.split() if w not in ['surgery', 'surgical', 'operation', 'procedure', 'options', 'for']]
+            if condition_terms:
+                condition_search = ' '.join(condition_terms)
+                procedure_matches = icd10_data[
+                    (icd10_data['normalized_long'].str.contains('|'.join(condition_terms), case=False, na=False)) &
+                    (icd10_data['CodeWithSeparator'].str.startswith(('0', '3', '4')))  # Procedure code ranges
+                ]
                 
-                # Limit the number of partial matches to avoid overwhelming results
-                max_partial_matches = 10
-                for _, row in partial_matches.head(max_partial_matches).iterrows():
-                    match = {
+                for _, row in procedure_matches.iterrows():
+                    matches.append({
                         "code": str(row['CodeWithSeparator']),
                         "description": str(row['LongDescription']),
-                        "match_type": "partial"
-                    }
-                    matches.append(match)
+                        "match_type": "procedure",
+                        "confidence": 0.9
+                    })
         
-        except AttributeError as e:
-            return []
+        # 3. Partial matches with improved scoring
+        for _, row in icd10_data.iterrows():
+            desc_words = set(row['normalized_long'].split())
+            word_overlap = len(all_term_words.intersection(desc_words))
             
-        return matches
+            if word_overlap > 0:
+                # Calculate base confidence
+                confidence = 0.3 + (word_overlap / len(all_term_words)) * 0.6
+                
+                # Boost confidence for specific conditions
+                if 'arthritis' in term and 'arthritis' in row['normalized_long']:
+                    confidence = min(1.0, confidence + 0.2)
+                if 'joint' in term and 'joint' in row['normalized_long']:
+                    confidence = min(1.0, confidence + 0.1)
+                if 'basal' in term and any(w in row['normalized_long'] for w in ['basal', 'base', 'thumb', 'carpometacarpal']):
+                    confidence = min(1.0, confidence + 0.2)
+                
+                # Add match if confidence is high enough
+                if confidence > 0.3:
+                    matches.append({
+                        "code": str(row['CodeWithSeparator']),
+                        "description": str(row['LongDescription']),
+                        "match_type": "partial",
+                        "confidence": round(confidence, 2)
+                    })
+        
+        # 4. Related condition matches
+        code_prefix = None
+        for match in matches:
+            if match['confidence'] >= 0.8:
+                code = match['code']
+                prefix = code.split('.')[0]
+                if len(prefix) >= 3:
+                    code_prefix = prefix[:3]
+                    break
+        
+        if code_prefix:
+            related_matches = icd10_data[
+                icd10_data['CodeWithSeparator'].str.startswith(code_prefix)
+            ]
+            
+            for _, row in related_matches.iterrows():
+                code = str(row['CodeWithSeparator'])
+                if not any(m['code'] == code for m in matches):
+                    matches.append({
+                        "code": code,
+                        "description": str(row['LongDescription']),
+                        "match_type": "related",
+                        "confidence": 0.7
+                    })
+        
+        # Sort by confidence and remove duplicates
+        matches.sort(key=lambda x: x['confidence'], reverse=True)
+        unique_matches = []
+        seen_codes = set()
+        
+        for match in matches:
+            if match['code'] not in seen_codes:
+                seen_codes.add(match['code'])
+                unique_matches.append(match)
+        
+        return unique_matches[:20]
         
     except Exception as e:
-        import traceback
+        print(f"Error in match_icd10_codes: {str(e)}")
+        return []
+
+def match_subject_to_icd10(subject: str) -> List[Dict]:
+    """Match medical subject directly to ICD-10 codes with comprehensive category matching
+    
+    Args:
+        subject (str): The medical subject/category to match
+        
+    Returns:
+        List[Dict]: List of matching ICD-10 codes with their descriptions and match types
+    """
+    if not subject or not isinstance(subject, str):
+        return []
+        
+    try:
+        all_matches = []
+        subject = subject.lower().strip()
+        
+        # 1. First try direct keyword matching
+        direct_matches = match_icd10_codes(subject)
+        all_matches.extend(direct_matches)
+        
+        # 2. Try matching individual words if subject has multiple words
+        subject_words = subject.split()
+        if len(subject_words) > 1:
+            for word in subject_words:
+                if len(word) > 3:  # Only try matching significant words
+                    word_matches = match_icd10_codes(word)
+                    # Add matches with reduced confidence
+                    for match in word_matches:
+                        match['confidence'] = round(match['confidence'] * 0.8, 2)  # Reduce confidence for word matches
+                        all_matches.append(match)
+        
+        # 3. Try category-based matching
+        category_matches = []
+        for category, info in direct_mappings.items():
+            for code_range, keywords in info['codes'].items():
+                if any(kw in subject for kw in keywords):
+                    start_code, end_code = code_range.split('-')
+                    matches_in_range = icd10_data[
+                        (icd10_data['CodeWithSeparator'] >= start_code) & 
+                        (icd10_data['CodeWithSeparator'] <= end_code)
+                    ]
+                    
+                    for _, row in matches_in_range.iterrows():
+                        # Calculate match quality
+                        desc_words = set(row['LongDescription'].lower().split())
+                        subject_words = set(subject.split())
+                        word_overlap = len(subject_words.intersection(desc_words))
+                        
+                        # Calculate confidence
+                        confidence = info['confidence']
+                        if word_overlap > 0:
+                            confidence = min(1.0, confidence + (word_overlap * 0.05))
+                        
+                        category_matches.append({
+                            "code": str(row['CodeWithSeparator']),
+                            "description": str(row['LongDescription']),
+                            "match_type": "category",
+                            "confidence": round(confidence, 2),
+                            "category": category
+                        })
+        
+        all_matches.extend(category_matches)
+        
+        # Sort by confidence and remove duplicates
+        all_matches.sort(key=lambda x: x['confidence'], reverse=True)
+        unique_matches = []
+        seen_codes = set()
+        
+        for match in all_matches:
+            if match['code'] not in seen_codes:
+                seen_codes.add(match['code'])
+                unique_matches.append(match)
+        
+        return unique_matches[:20]  # Return more matches
+        
+    except Exception as e:
+        print(f"Error in match_subject_to_icd10: {str(e)}")
         return []
 
 def extract_subjects_from_pdf(pdf_bytes: bytes) -> Dict[str, str]:
@@ -518,6 +851,46 @@ def extract_subjects_from_pdf(pdf_bytes: bytes) -> Dict[str, str]:
         "first_paragraph": first_paragraph
     }
 
+def validate_icd10_correlation(text: str, icd10_matches: List[Dict]) -> List[Dict]:
+    """Validate if the ICD-10 codes actually correlate with the article content
+    
+    Args:
+        text (str): The article text
+        icd10_matches (List[Dict]): List of potential ICD-10 matches
+        
+    Returns:
+        List[Dict]: List of validated ICD-10 matches with correlation scores
+    """
+    validated_matches = []
+    text = text.lower()
+    
+    for match in icd10_matches:
+        correlation_score = 0.0
+        code_desc = match['description'].lower()
+        
+        # Check if code description keywords appear in text
+        desc_words = set(code_desc.split())
+        text_words = set(text.split())
+        word_overlap = len(desc_words.intersection(text_words))
+        
+        if word_overlap > 0:
+            # Calculate correlation score based on word overlap and position
+            correlation_score = min(0.3 + (word_overlap * 0.1), 1.0)
+            
+            # Check if description appears near the beginning of the text
+            if any(sent.strip().startswith(code_desc[:20]) for sent in text.split('.')):
+                correlation_score += 0.2
+            
+            # Add validation result
+            validated_match = match.copy()
+            validated_match['correlation_score'] = round(correlation_score, 2)
+            validated_match['is_validated'] = correlation_score >= 0.5
+            validated_matches.append(validated_match)
+    
+    # Sort by correlation score
+    validated_matches.sort(key=lambda x: x['correlation_score'], reverse=True)
+    return validated_matches
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     """Serve the main HTML page"""
@@ -526,7 +899,12 @@ async def home(request: Request):
 @app.post("/analyze")
 async def analyze_pdf(file: UploadFile = File(...)):
     """
-    Analyze uploaded PDF file and extract medical terms with ICD-10 codes
+    Analyze uploaded PDF file following the process:
+    1. Extract subject from title
+    2. Match ICD-10 codes for subject
+    3. Extract keywords from first paragraph
+    4. Match ICD-10 codes for keywords
+    5. Validate correlations
     """
     if not file.filename.endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
@@ -535,37 +913,57 @@ async def analyze_pdf(file: UploadFile = File(...)):
         # Read PDF content
         contents = await file.read()
         
-        # Extract subjects first
+        # Step 1: Extract subject from title
         subjects_info = extract_subjects_from_pdf(contents)
+        title_subject = subjects_info.get("title_subject", "")
+        first_paragraph = subjects_info.get("first_paragraph", "")
         
-        # Extract medical terms from whole content
-        text = get_intro_between_h1_and_h2(contents)
-        medical_terms = extract_medical_terms(text)
+        # Step 2: Match ICD-10 codes for subject
+        subject_icd10_matches = []
+        if title_subject:
+            subject_icd10_matches = match_subject_to_icd10(title_subject)
         
-        # Match ICD-10 codes for each term
-        results = []
-        for term in medical_terms:
-            icd10_matches = match_icd10_codes(term['text'])
-            result = {
-                "term": term['text'],
-                "type": term['label'],
-                "icd10_matches": icd10_matches if icd10_matches else [],  # Ensure it's always a list
-                "validation_status": "pending"  # Initial status
-            }
-            results.append(result)
+        # Step 3: Extract keywords from first paragraph
+        keywords = extract_keywords_from_paragraph(first_paragraph)
+        
+        # Step 4: Match ICD-10 codes for keywords
+        keyword_matches = []
+        for keyword in keywords:
+            matches = match_icd10_codes(keyword)
+            if matches:
+                keyword_matches.extend(matches)
+        
+        # Combine subject and keyword matches
+        all_matches = subject_icd10_matches + keyword_matches
+        
+        # Step 5: Validate correlations
+        validated_matches = validate_icd10_correlation(first_paragraph, all_matches)
+        
+        # Organize results by confidence and correlation
+        high_confidence_matches = [m for m in validated_matches if m['correlation_score'] >= 0.7]
+        medium_confidence_matches = [m for m in validated_matches if 0.5 <= m['correlation_score'] < 0.7]
+        low_confidence_matches = [m for m in validated_matches if m['correlation_score'] < 0.5]
         
         return JSONResponse(content={
             "filename": file.filename,
             "title": subjects_info["title"],
-            "title_subject": subjects_info["title_subject"],
-            "found_abbreviations": subjects_info["found_abbreviations"],
-            "first_paragraph": subjects_info["first_paragraph"],
-            "total_terms": len(medical_terms),
-            "results": results
+            "title_subject": title_subject,
+            "extracted_keywords": keywords,
+            "icd10_matches": {
+                "high_confidence": high_confidence_matches[:5],
+                "medium_confidence": medium_confidence_matches[:3],
+                "low_confidence": low_confidence_matches[:2]
+            },
+            "first_paragraph": first_paragraph,
+            "analysis_summary": {
+                "total_keywords_found": len(keywords),
+                "total_matches_found": len(validated_matches),
+                "high_confidence_count": len(high_confidence_matches),
+                "validation_status": "complete"
+            }
         })
         
     except Exception as e:
-        import traceback
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
