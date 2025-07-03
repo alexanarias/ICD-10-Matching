@@ -1,8 +1,13 @@
 fastapi
-medspacy
-pandas
-pdfplumber
 uvicorn
+openai
+pinecone
+python-dotenv
+jinja2
 python-multipart
+PyPDF2
 python-docx
-PyMuPDF
+lxml
+pandas
+tqdm
+httpx

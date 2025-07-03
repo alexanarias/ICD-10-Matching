@@ -1,0 +1,513 @@
+{
+  "chapters": [
+    "Certain conditions originating in the perinatal period (P00-P96)",
+    "Certain infectious and parasitic diseases (A00-B99)",
+    "Codes for special purposes (U00-U85)",
+    "Congenital malformations, deformations, chromosomal abnormalities, and genetic disorders (Q00-QA0)",
+    "Diseases of the blood and blood-forming organs and certain disorders involving the immune mechanism (D50-D89)",
+    "Diseases of the circulatory system (I00-I99)",
+    "Diseases of the digestive system (K00-K95)",
+    "Diseases of the ear and mastoid process (H60-H95)",
+    "Diseases of the eye and adnexa (H00-H59)",
+    "Diseases of the genitourinary system (N00-N99)",
+    "Diseases of the musculoskeletal system and connective tissue (M00-M99)",
+    "Diseases of the nervous system (G00-G99)",
+    "Diseases of the respiratory system (J00-J99)",
+    "Diseases of the skin and subcutaneous tissue (L00-L99)",
+    "Endocrine, nutritional and metabolic diseases (E00-E89)",
+    "External causes of morbidity (V00-Y99)",
+    "Factors influencing health status and contact with health services (Z00-Z99)",
+    "Injury, poisoning and certain other consequences of external causes (S00-T88)",
+    "Mental, Behavioral and Neurodevelopmental disorders (F01-F99)",
+    "Neoplasms (C00-D49)",
+    "Pregnancy, childbirth and the puerperium (O00-O9A)",
+    "Symptoms, signs and abnormal clinical and laboratory findings, not elsewhere classified (R00-R99)",
+    "cls causes of morbidity (V00-Y99)"
+  ],
+  "chapter_stats": {
+    "Certain conditions originating in the perinatal period (P00-P96)": {
+      "total_codes": 565,
+      "sample_sections": [
+        "Abnormal findings on neonatal screening (P09)",
+        "Other problems with newborn (P84)",
+        "Respiratory and cardiovascular disorders specific to the perinatal period (P19-P29)",
+        "Birth trauma (P10-P15)",
+        "Hemorrhagic and hematological disorders of newborn (P50-P61)"
+      ],
+      "sample_codes": [
+        "P00",
+        "P00.0",
+        "P00.1",
+        "P00.2",
+        "P00.3",
+        "P00.4",
+        "P00.5",
+        "P00.6",
+        "P00.7",
+        "P00.8"
+      ]
+    },
+    "Certain infectious and parasitic diseases (A00-B99)": {
+      "total_codes": 1309,
+      "sample_sections": [
+        "Viral infections characterized by skin and mucous membrane lesions (B00-B09)",
+        "Tuberculosis (A15-A19)",
+        "Helminthiases (B65-B83)",
+        "Other bacterial diseases (A30-A49)",
+        "Viral hepatitis (B15-B19)"
+      ],
+      "sample_codes": [
+        "A00",
+        "A00.0",
+        "A00.1",
+        "A00.9",
+        "A01",
+        "A01.0",
+        "A01.00",
+        "A01.01",
+        "A01.02",
+        "A01.03"
+      ]
+    },
+    "Codes for special purposes (U00-U85)": {
+      "total_codes": 5,
+      "sample_sections": [
+        "Provisional assignment of new diseases of uncertain etiology or emergency use (U00-U49)"
+      ],
+      "sample_codes": [
+        "U07",
+        "U07.0",
+        "U07.1",
+        "U09",
+        "U09.9"
+      ]
+    },
+    "Congenital malformations, deformations, chromosomal abnormalities, and genetic disorders (Q00-QA0)": {
+      "total_codes": 1086,
+      "sample_sections": [
+        "Genetic disorders, not elsewhere classified (QA0)",
+        "Congenital malformations of the nervous system (Q00-Q07)",
+        "Congenital malformations of the circulatory system (Q20-Q28)",
+        "Chromosomal abnormalities, not elsewhere classified (Q90-Q99)",
+        "Other congenital malformations (Q80-Q89)"
+      ],
+      "sample_codes": [
+        "Q00",
+        "Q00.0",
+        "Q00.1",
+        "Q00.2",
+        "Q01",
+        "Q01.0",
+        "Q01.1",
+        "Q01.2",
+        "Q01.8",
+        "Q01.9"
+      ]
+    },
+    "Diseases of the blood and blood-forming organs and certain disorders involving the immune mechanism (D50-D89)": {
+      "total_codes": 401,
+      "sample_sections": [
+        "Nutritional anemias (D50-D53)",
+        "Certain disorders involving the immune mechanism (D80-D89)",
+        "Hemolytic anemias (D55-D59)",
+        "Aplastic and other anemias and other bone marrow failure syndromes (D60-D64)",
+        "Other disorders of blood and blood-forming organs (D70-D77)"
+      ],
+      "sample_codes": [
+        "D50",
+        "D50.0",
+        "D50.1",
+        "D50.8",
+        "D50.9",
+        "D51",
+        "D51.0",
+        "D51.1",
+        "D51.2",
+        "D51.3"
+      ]
+    },
+    "Diseases of the circulatory system (I00-I99)": {
+      "total_codes": 1798,
+      "sample_sections": [
+        "Other and unspecified disorders of the circulatory system (I95-I99)",
+        "Hypertensive diseases (I10-I1A)",
+        "Diseases of arteries, arterioles and capillaries (I70-I79)",
+        "Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)",
+        "Acute rheumatic fever (I00-I02)"
+      ],
+      "sample_codes": [
+        "I00",
+        "I01",
+        "I01.0",
+        "I01.1",
+        "I01.2",
+        "I01.8",
+        "I01.9",
+        "I02",
+        "I02.0",
+        "I02.9"
+      ]
+    },
+    "Diseases of the digestive system (K00-K95)": {
+      "total_codes": 1109,
+      "sample_sections": [
+        "Hernia (K40-K46)",
+        "Diseases of peritoneum and retroperitoneum (K65-K68)",
+        "Noninfective enteritis and colitis (K50-K52)",
+        "Diseases of appendix (K35-K38)",
+        "Diseases of oral cavity and salivary glands (K00-K14)"
+      ],
+      "sample_codes": [
+        "K00",
+        "K00.0",
+        "K00.1",
+        "K00.2",
+        "K00.3",
+        "K00.4",
+        "K00.5",
+        "K00.6",
+        "K00.7",
+        "K00.8"
+      ]
+    },
+    "Diseases of the ear and mastoid process (H60-H95)": {
+      "total_codes": 871,
+      "sample_sections": [
+        "Intraoperative and postprocedural complications and disorders of ear and mastoid process, not elsewhere classified (H95)",
+        "Other disorders of ear (H90-H94)",
+        "Diseases of middle ear and mastoid (H65-H75)",
+        "Diseases of external ear (H60-H62)",
+        "Diseases of inner ear (H80-H83)"
+      ],
+      "sample_codes": [
+        "H60",
+        "H60.0",
+        "H60.00",
+        "H60.01",
+        "H60.02",
+        "H60.03",
+        "H60.1",
+        "H60.10",
+        "H60.11",
+        "H60.12"
+      ]
+    },
+    "Diseases of the eye and adnexa (H00-H59)": {
+      "total_codes": 3466,
+      "sample_sections": [
+        "Other disorders of eye and adnexa (H55-H57)",
+        "Disorders of sclera, cornea, iris and ciliary body (H15-H22)",
+        "Disorders of conjunctiva (H10-H11)",
+        "Glaucoma (H40-H42)",
+        "Disorders of eyelid, lacrimal system and orbit (H00-H05)"
+      ],
+      "sample_codes": [
+        "H00",
+        "H00.0",
+        "H00.01",
+        "H00.011",
+        "H00.012",
+        "H00.013",
+        "H00.014",
+        "H00.015",
+        "H00.016",
+        "H00.019"
+      ]
+    },
+    "Diseases of the genitourinary system (N00-N99)": {
+      "total_codes": 1044,
+      "sample_sections": [
+        "Renal tubulo-interstitial diseases (N10-N16)",
+        "Urolithiasis (N20-N23)",
+        "Disorders of breast (N60-N65)",
+        "Diseases of male genital organs (N40-N53)",
+        "Intraoperative and postprocedural complications and disorders of genitourinary system, not elsewhere classified (N99)"
+      ],
+      "sample_codes": [
+        "N00",
+        "N00.0",
+        "N00.1",
+        "N00.2",
+        "N00.3",
+        "N00.4",
+        "N00.5",
+        "N00.6",
+        "N00.7",
+        "N00.8"
+      ]
+    },
+    "Diseases of the musculoskeletal system and connective tissue (M00-M99)": {
+      "total_codes": 8674,
+      "sample_sections": [
+        "Osteoarthritis (M15-M19)",
+        "Other osteopathies (M86-M90)",
+        "Other dorsopathies (M50-M54)",
+        "Spondylopathies (M45-M49)",
+        "Intraoperative and postprocedural complications and disorders of musculoskeletal system, not elsewhere classified (M96)"
+      ],
+      "sample_codes": [
+        "M00",
+        "M00.0",
+        "M00.00",
+        "M00.01",
+        "M00.011",
+        "M00.012",
+        "M00.019",
+        "M00.02",
+        "M00.021",
+        "M00.022"
+      ]
+    },
+    "Diseases of the nervous system (G00-G99)": {
+      "total_codes": 932,
+      "sample_sections": [
+        "Extrapyramidal and movement disorders (G20-G26)",
+        "Episodic and paroxysmal disorders (G40-G47)",
+        "Other degenerative diseases of the nervous system (G30-G32)",
+        "Diseases of myoneural junction and muscle (G70-G73)",
+        "Demyelinating diseases of the central nervous system (G35-G37)"
+      ],
+      "sample_codes": [
+        "G00",
+        "G00.0",
+        "G00.1",
+        "G00.2",
+        "G00.3",
+        "G00.8",
+        "G00.9",
+        "G01",
+        "G02",
+        "G03"
+      ]
+    },
+    "Diseases of the respiratory system (J00-J99)": {
+      "total_codes": 471,
+      "sample_sections": [
+        "Influenza and pneumonia (J09-J18)",
+        "Other diseases of upper respiratory tract (J30-J39)",
+        "Suppurative and necrotic conditions of the lower respiratory tract (J85-J86)",
+        "Other acute lower respiratory infections (J20-J22)",
+        "Other diseases of the pleura (J90-J94)"
+      ],
+      "sample_codes": [
+        "J00",
+        "J01",
+        "J01.0",
+        "J01.00",
+        "J01.01",
+        "J01.1",
+        "J01.10",
+        "J01.11",
+        "J01.2",
+        "J01.20"
+      ]
+    },
+    "Diseases of the skin and subcutaneous tissue (L00-L99)": {
+      "total_codes": 1206,
+      "sample_sections": [
+        "Radiation-related disorders of the skin and subcutaneous tissue (L55-L59)",
+        "Disorders of skin appendages (L60-L75)",
+        "Intraoperative and postprocedural complications of skin and subcutaneous tissue (L76)",
+        "Dermatitis and eczema (L20-L30)",
+        "Papulosquamous disorders (L40-L45)"
+      ],
+      "sample_codes": [
+        "L00",
+        "L01",
+        "L01.0",
+        "L01.00",
+        "L01.01",
+        "L01.02",
+        "L01.03",
+        "L01.09",
+        "L01.1",
+        "L02"
+      ]
+    },
+    "Endocrine, nutritional and metabolic diseases (E00-E89)": {
+      "total_codes": 1267,
+      "sample_sections": [
+        "Disorders of thyroid gland (E00-E07)",
+        "Other disorders of glucose regulation and pancreatic internal secretion (E15-E16)",
+        "Other nutritional deficiencies (E50-E64)",
+        "Metabolic disorders (E70-E88)",
+        "Disorders of other endocrine glands (E20-E35)"
+      ],
+      "sample_codes": [
+        "E00",
+        "E00.0",
+        "E00.1",
+        "E00.2",
+        "E00.9",
+        "E01",
+        "E01.0",
+        "E01.1",
+        "E01.2",
+        "E01.8"
+      ]
+    },
+    "External causes of morbidity (V00-Y99)": {
+      "total_codes": 10601,
+      "sample_sections": [
+        "Exposure to inanimate mechanical forces (W20-W49)",
+        "Exposure to forces of nature (X30-X39)",
+        "Motorcycle rider injured in transport accident (V20-V29)",
+        "Other land transport accidents (V80-V89)",
+        "Exposure to electric current, radiation and extreme ambient air temperature and pressure (W85-W99)"
+      ],
+      "sample_codes": [
+        "V00",
+        "V00.0",
+        "V00.01",
+        "V00.02",
+        "V00.03",
+        "V00.031",
+        "V00.038",
+        "V00.09",
+        "V00.1",
+        "V00.11"
+      ]
+    },
+    "Factors influencing health status and contact with health services (Z00-Z99)": {
+      "total_codes": 1844,
+      "sample_sections": [
+        "Persons encountering health services for examinations (Z00-Z13)",
+        "Persons encountering health services in circumstances related to reproduction (Z30-Z39)",
+        "Persons with potential health hazards related to family and personal history and certain conditions influencing health status (Z77-Z99)",
+        "Resistance to antimicrobial drugs (Z16)",
+        "Blood type (Z67)"
+      ],
+      "sample_codes": [
+        "Z00",
+        "Z00.0",
+        "Z00.00",
+        "Z00.01",
+        "Z00.1",
+        "Z00.11",
+        "Z00.110",
+        "Z00.111",
+        "Z00.12",
+        "Z00.121"
+      ]
+    },
+    "Injury, poisoning and certain other consequences of external causes (S00-T88)": {
+      "total_codes": 54261,
+      "sample_sections": [
+        "Injuries to the ankle and foot (S90-S99)",
+        "Burns and corrosions of external body surface, specified by site (T20-T25)",
+        "Injuries to the wrist, hand and fingers (S60-S69)",
+        "Injuries to the neck (S10-S19)",
+        "Frostbite (T33-T34)"
+      ],
+      "sample_codes": [
+        "S00",
+        "S00.0",
+        "S00.00",
+        "S00.01",
+        "S00.02",
+        "S00.03",
+        "S00.04",
+        "S00.05",
+        "S00.06",
+        "S00.07"
+      ]
+    },
+    "Mental, Behavioral and Neurodevelopmental disorders (F01-F99)": {
+      "total_codes": 1112,
+      "sample_sections": [
+        "Mental disorders due to known physiological conditions (F01-F09)",
+        "Intellectual Disabilities (F70-F79)",
+        "Pervasive and specific developmental disorders (F80-F89)",
+        "Mood [affective] disorders (F30-F39)",
+        "Anxiety, dissociative, stress-related, somatoform and other nonpsychotic mental disorders (F40-F48)"
+      ],
+      "sample_codes": [
+        "F01",
+        "F01.5",
+        "F01.50",
+        "F01.51",
+        "F01.511",
+        "F01.518",
+        "F01.52",
+        "F01.53",
+        "F01.54",
+        "F01.A"
+      ]
+    },
+    "Neoplasms (C00-D49)": {
+      "total_codes": 2178,
+      "sample_sections": [
+        "Neoplasms of unspecified behavior (D49)",
+        "Benign neoplasms, except benign neuroendocrine tumors (D10-D36)",
+        "Malignant neoplasms of breast (C50)",
+        "In situ neoplasms (D00-D09)",
+        "Malignant neoplasms of bone and articular cartilage (C40-C41)"
+      ],
+      "sample_codes": [
+        "C00",
+        "C00.0",
+        "C00.1",
+        "C00.2",
+        "C00.3",
+        "C00.4",
+        "C00.5",
+        "C00.6",
+        "C00.8",
+        "C00.9"
+      ]
+    },
+    "Pregnancy, childbirth and the puerperium (O00-O9A)": {
+      "total_codes": 3023,
+      "sample_sections": [
+        "Other obstetric conditions, not elsewhere classified (O94-O9A)",
+        "Maternal care related to the fetus and amniotic cavity and possible delivery problems (O30-O48)",
+        "Complications of labor and delivery (O60-O77)",
+        "Pregnancy with abortive outcome (O00-O08)",
+        "Encounter for delivery (O80-O82)"
+      ],
+      "sample_codes": [
+        "O00",
+        "O00.0",
+        "O00.00",
+        "O00.01",
+        "O00.1",
+        "O00.10",
+        "O00.101",
+        "O00.102",
+        "O00.109",
+        "O00.11"
+      ]
+    },
+    "Symptoms, signs and abnormal clinical and laboratory findings, not elsewhere classified (R00-R99)": {
+      "total_codes": 962,
+      "sample_sections": [
+        "Ill-defined and unknown cause of mortality (R99)",
+        "Abnormal tumor markers (R97)",
+        "Symptoms and signs involving cognition, perception, emotional state and behavior (R40-R46)",
+        "Abnormal findings on diagnostic imaging and in function studies, without diagnosis (R90-R94)",
+        "Abnormal findings on examination of blood, without diagnosis (R70-R79)"
+      ],
+      "sample_codes": [
+        "R00",
+        "R00.0",
+        "R00.1",
+        "R00.2",
+        "R00.8",
+        "R00.9",
+        "R01",
+        "R01.0",
+        "R01.1",
+        "R01.2"
+      ]
+    },
+    "cls causes of morbidity (V00-Y99)": {
+      "total_codes": 1,
+      "sample_sections": [
+        "Car occupant injured in transport accident (V40-V49)"
+      ],
+      "sample_codes": [
+        "V40.6XXD"
+      ]
+    }
+  }
+}
