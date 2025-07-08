@@ -1,108 +1,145 @@
-"""Test script for the AI Medical Coding System with structured outputs"""
+"""
+🧪 AI Medical Coding System - Enhanced Multi-Stage Test Suite
+
+Tests the enhanced multi-stage AI validation process:
+1. Focused initial selection (8-15 primary codes)
+2. Hierarchy enrichment (±3 codes around selected)
+3. Bulk retrieval of enriched codes
+4. Final clinical refinement
+"""
 
 import asyncio
-from .chapter_classifier import ChapterClassifier
-from .vectorstore import VectorStore
-from .ai_validator import AIValidator
+import sys
+import os
+
+# Add parent directory to path for imports
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from app.title_enricher import TitleEnricher
+from app.ai_validator import AIValidator
+from app.vectorstore import VectorStore
 
 
-async def test_structured_outputs():
-    """Test the complete workflow with structured outputs"""
+async def test_enhanced_multi_stage_process():
+    """Test the enhanced multi-stage AI validation process"""
     
-    # Sample medical text for testing
-    test_text = """
-    Patient presents with chest pain and shortness of breath. 
-    History of diabetes mellitus type 2. 
-    Physical examination reveals elevated blood pressure and irregular heartbeat.
-    EKG shows signs consistent with myocardial infarction.
-    Blood glucose levels are elevated at 250 mg/dL.
-    Patient reports recent weight loss and frequent urination.
-    """
+    print("🧪 Testing Enhanced Multi-Stage AI Validation Process...")
+    print("=" * 70)
     
-    print("🧪 Testing AI Medical Coding System with Structured Outputs")
-    print("=" * 60)
+    # Initialize components
+    enricher = TitleEnricher()
+    validator = AIValidator()
+    vectorstore = VectorStore()
+    
+    # Test data - Depression example to verify root code focus
+    test_text = "Depression in Teens: Recognizing the Signs"
     
     try:
-        # Test 1: Chapter Classification
-        print("\n1️⃣ Testing Chapter Classification...")
-        classifier = ChapterClassifier()
-        chapter_result = classifier.classify_chapters(test_text)
+        print(f"📄 Test Input: {test_text}")
+        print()
         
-        print(f"✅ Found {len(chapter_result.predictions)} chapter predictions:")
-        for pred in chapter_result.predictions:
-            prob_percent = pred.probability * 100
-            print(f"   📋 {pred.chapter_name}")
-            print(f"      Probability: {prob_percent:.1f}%")
-            print(f"      Reasoning: {pred.reasoning}")
-            print()
+        # Step 1: Title enrichment
+        print("🔍 Step 1: Title Enrichment...")
+        enrichment = enricher.enrich_title(test_text)
+        search_text = f"{test_text} {enrichment.enriched_keywords}"
+        print(f"✅ Enhanced search text: {search_text}")
+        print()
         
-        # Get high probability chapters
-        target_chapters = classifier.get_high_probability_chapters(chapter_result, 0.5)
-        print(f"🎯 Target chapters (>50%): {len(target_chapters)}")
+        # Step 2: Vector search
+        print("📊 Step 2: Vector Search...")
+        candidates = vectorstore.search_all_codes(search_text, top_k=450)
+        print(f"✅ Found {len(candidates)} candidate codes")
+        print()
         
-        # Test 2: Vector Search
-        print("\n2️⃣ Testing Vector Search...")
-        vectorstore = VectorStore()
+        # Step 3: Enhanced Multi-Stage Validation
+        print("🎯 Step 3: Enhanced Multi-Stage Validation...")
+        print("   📌 Stage 1: Focused primary condition identification...")
+        print("   🔍 Stage 2: Hierarchy enrichment (±3 code range)...")
+        print("   📋 Stage 3: Bulk retrieval of enriched codes...")
+        print("   🩺 Stage 4: Final clinical refinement...")
         
-        if target_chapters:
-            search_results = vectorstore.search_codes_by_chapter(
-                test_text, target_chapters, top_k=10
-            )
-            
-            total_candidates = sum(len(results) for results in search_results.values())
-            print(f"✅ Found {total_candidates} candidate codes across {len(search_results)} chapters")
-            
-            # Flatten for validation
-            all_candidates = []
-            for chapter_name, codes in search_results.items():
-                print(f"   📂 {chapter_name}: {len(codes)} codes")
-                all_candidates.extend(codes[:5])  # Top 5 per chapter for testing
-        else:
-            print("⚠️  No high-probability chapters found, searching all chapters...")
-            all_candidates = vectorstore.search_all_codes(test_text, top_k=20)
-            print(f"✅ Found {len(all_candidates)} candidate codes (global search)")
+        refinement_result = await validator.enhanced_multi_stage_validation(
+            medical_text=search_text,
+            initial_candidates=candidates,
+            vectorstore=vectorstore
+        )
         
-        # Show sample candidates
-        print(f"\n📋 Sample candidate codes:")
-        for i, candidate in enumerate(all_candidates[:3]):
-            print(f"   {i+1}. {candidate['icd_code']} - {candidate['description']}")
-            print(f"      Similarity: {candidate['score']:.3f}")
+        print(f"✅ Enhanced validation complete: {len(refinement_result.refined_codes)} final codes")
+        print()
         
-        # Test 3: AI Validation
-        print("\n3️⃣ Testing AI Validation...")
-        validator = AIValidator()
+        # Display results with analysis
+        print("📋 Enhanced Results Analysis:")
+        print("-" * 50)
         
-        if all_candidates:
-            validation_result = validator.validate_codes(test_text, all_candidates)
-            
-            print(f"✅ Validation complete!")
-            print(f"📊 Evaluated {len(validation_result.validated_codes)} codes")
-            
-            # Get high confidence codes
-            final_codes = validator.get_high_confidence_codes(validation_result, 0.5)
-            print(f"🏆 High confidence codes (>50%): {len(final_codes)}")
-            
-            print(f"\n🎯 Final Recommendations:")
-            for code in final_codes:
-                conf_percent = code.confidence_score * 100
-                print(f"   ✓ {code.icd_code} - {code.description}")
-                print(f"     Confidence: {conf_percent:.1f}%")
-                print(f"     Reasoning: {code.reasoning}")
-                print()
-            
-            print(f"💡 Overall Recommendation:")
-            print(f"   {validation_result.overall_recommendation}")
-        else:
-            print("⚠️  No candidates available for validation")
+        # Analyze root code distribution
+        root_codes = {}
+        for code in refinement_result.refined_codes:
+            root = code.icd_code.split('.')[0] if '.' in code.icd_code else code.icd_code
+            if root not in root_codes:
+                root_codes[root] = []
+            root_codes[root].append(code.icd_code)
         
-        print("\n" + "=" * 60)
-        print("🎉 Test completed successfully! All structured outputs working.")
+        print(f"🎯 Root Code Distribution ({len(root_codes)} families):")
+        for root, codes in root_codes.items():
+            print(f"   • {root}: {len(codes)} codes → {', '.join(codes)}")
+        
+        print()
+        print("🔍 Top 5 Enhanced Codes:")
+        for i, code in enumerate(refinement_result.refined_codes[:5], 1):
+            confidence_pct = int(code.confidence_score * 100)
+            print(f"   {i}. {code.icd_code} ({confidence_pct}%): {code.enhanced_description[:80]}...")
+        
+        print()
+        print(f"🏥 Clinical Summary: {refinement_result.clinical_summary}")
+        
+        # Success criteria analysis
+        print()
+        print("✅ Enhanced Process Success Metrics:")
+        print(f"   • Root Code Families: {len(root_codes)} (Target: 1-2)")
+        print(f"   • Total Final Codes: {len(refinement_result.refined_codes)} (Target: 8-15)")
+        print(f"   • Primary Focus: {'✅ ACHIEVED' if len(root_codes) <= 2 else '❌ TOO BROAD'}")
+        
+        print("\n🚀 Enhanced multi-stage process completed successfully!")
         
     except Exception as e:
-        print(f"❌ Test failed: {str(e)}")
-        import traceback
-        traceback.print_exc()
+        print(f"❌ Enhanced test failed: {str(e)}")
+        raise
+
+
+async def test_hierarchy_enrichment():
+    """Test the hierarchy enrichment functionality specifically"""
+    
+    print("\n🧪 Testing Hierarchy Enrichment...")
+    print("=" * 50)
+    
+    vectorstore = VectorStore()
+    
+    # Test data
+    selected_codes = ["F32.1", "F33.0"]
+    excluded_codes = {"F32.0", "F32.9", "F33.1", "F43.21"}  # Simulate initial round results
+    
+    print(f"📌 Selected Codes: {selected_codes}")
+    print(f"🚫 Excluded Codes: {excluded_codes}")
+    print()
+    
+    # Test enrichment
+    enriched = vectorstore.enrich_code_hierarchy(
+        selected_codes=selected_codes,
+        excluded_codes=excluded_codes,
+        range_size=3
+    )
+    
+    print(f"🔍 Enriched Codes Generated: {sorted(enriched)}")
+    print(f"✅ Successfully generated {len(enriched)} new codes")
+    
+    # Verify no excluded codes are included
+    overlap = enriched.intersection(excluded_codes)
+    if overlap:
+        print(f"❌ ERROR: Enriched codes overlap with excluded: {overlap}")
+    else:
+        print("✅ No overlap with excluded codes - Perfect!")
 
 
 if __name__ == "__main__":
-    asyncio.run(test_structured_outputs()) 
+    asyncio.run(test_enhanced_multi_stage_process())
+    asyncio.run(test_hierarchy_enrichment()) 

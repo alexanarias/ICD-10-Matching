@@ -1,0 +1,143 @@
+
+/* Removed the global margin and padding reset */
+* {
+    text-indent: 0;
+    max-width: 750px;
+    margin: auto;
+}
+
+p {
+    color: black;
+    font-family: Arial, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: none;
+    font-size: 12pt;
+    margin: 10pt 0;
+}
+
+cap {
+    color: black;
+    font-family: Arial, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: none;
+    font-size: 10pt;
+    margin-top: -7pt;
+}
+
+h1 {
+    color: black;
+    font-family: Arial, sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 22pt;
+    max-width: 750px;
+    margin: auto;
+    text-align: left;
+    margin-bottom: 10pt; /* Added margin-bottom */
+}
+
+.h2,
+h2 {
+    color: black;
+    font-family: Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 16pt;
+    max-width: 750px;
+    margin: auto;
+    margin-top: 30pt;
+    margin-bottom: 10pt; /* Added margin-bottom */
+}
+
+.no-padding-left {
+    padding-left: 0;
+}
+
+h3 {
+    color: black;
+    font-family: Arial, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: none;
+    font-size: 14pt;
+    max-width: 750px;
+    margin: auto;
+    margin-top: 10pt;      /* Changed margin-top */
+    margin-bottom: 10pt; /* Added margin-bottom */
+}
+
+h4 {
+    color: black;
+    font-family: Arial, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: none;
+    font-size: 10pt;
+    margin-top: -7pt;
+}
+
+
+
+body {
+    padding: 20px;
+}
+
+li {
+    display: block;
+    max-width: 750px;
+    margin: auto;
+    list-style-type: none;  /* Remove default bullet points */
+    margin: 5pt 0; /* Added margin for spacing */
+}
+
+#l1 {
+    padding-left: 0pt;
+    max-width: 750px;
+    margin: auto;
+}
+
+#l1 > li > *:first-child:before {
+    content: "● ";
+    color: black;
+    font-family: Arial, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: none;
+    font-size: 12pt;
+    max-width: 750px;
+    margin: auto;
+}
+
+.s2 {
+    color: black;
+    font-family: Arial, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: none;
+    font-size: 12pt;
+    line-height: 110%;
+    padding-left: 41pt;
+    text-indent: -18pt;
+    text-align: left;
+}
+
+img[src$="AAH_narrow.png"] {
+    width: 600px;
+	height: 65px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  table, th, td {
+    border: 2px solid black;
+  }
+  th, td {
+    padding: 8px; 
+    text-align: left;
+  }

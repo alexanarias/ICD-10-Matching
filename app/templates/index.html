@@ -3,139 +3,264 @@
 <head>
     <title>AI Medical Coding System</title>
     <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #1e40af;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+        }
+
         body { 
-            font-family: Arial, sans-serif; 
-            max-width: 800px; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            max-width: 900px; 
             margin: 0 auto; 
             padding: 20px; 
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
         }
+        
         .container { 
             background: #ffffff; 
-            padding: 30px; 
-            border-radius: 10px; 
-            margin: 20px 0; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .upload-box { 
-            border: 2px dashed #007bff; 
             padding: 40px; 
-            text-align: center; 
-            border-radius: 10px; 
+            border-radius: 20px; 
             margin: 20px 0; 
-            background: #f8f9ff;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(16px);
         }
+        
+        .upload-box { 
+            border: 2px dashed var(--primary-color); 
+            padding: 50px; 
+            text-align: center; 
+            border-radius: 15px; 
+            margin: 30px 0; 
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            transition: all 0.3s ease;
+        }
+        
+        .upload-box:hover {
+            border-color: var(--primary-dark);
+            background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+            transform: translateY(-2px);
+        }
+        
         .btn { 
-            background: #007bff; 
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); 
             color: white; 
-            padding: 12px 24px; 
+            padding: 15px 30px; 
             border: none; 
-            border-radius: 5px; 
+            border-radius: 12px; 
             cursor: pointer; 
             font-size: 16px; 
-            transition: background-color 0.3s;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
+        
         .btn:hover { 
-            background: #0056b3; 
+            background: linear-gradient(135deg, var(--primary-dark), #1e3a8a);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
         }
+        
         .result-box { 
             background: white; 
-            padding: 20px; 
-            border-radius: 5px; 
-            margin: 10px 0; 
-            border-left: 4px solid #007bff; 
-            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+            padding: 25px; 
+            border-radius: 12px; 
+            margin: 20px 0; 
+            border-left: 4px solid var(--primary-color); 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+        
         .chapter { 
-            background: #e8f4fd; 
-            padding: 15px; 
-            margin: 10px 0; 
-            border-radius: 5px; 
-            border-left: 4px solid #007bff;
+            background: linear-gradient(135deg, #e0f2fe, #f0f9ff); 
+            padding: 20px; 
+            margin: 15px 0; 
+            border-radius: 12px; 
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+        
         .code { 
-            background: #f8f9fa; 
-            padding: 15px; 
-            margin: 10px 0; 
-            border-radius: 5px; 
-            border-left: 4px solid #28a745; 
+            background: var(--gray-50); 
+            padding: 20px; 
+            margin: 15px 0; 
+            border-radius: 12px; 
+            border-left: 4px solid var(--success-color); 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
+        
         .high-confidence { 
-            border-left-color: #28a745; 
+            border-left-color: var(--success-color);
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
         }
+        
         .medium-confidence { 
-            border-left-color: #ffc107; 
+            border-left-color: var(--warning-color);
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
         }
+        
         .low-confidence { 
-            border-left-color: #dc3545; 
+            border-left-color: var(--danger-color);
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
         }
+        
         .score { 
-            font-weight: bold; 
-            padding: 2px 8px; 
-            border-radius: 3px; 
+            font-weight: 700; 
+            padding: 6px 12px; 
+            border-radius: 8px; 
             color: white; 
-            font-size: 12px;
+            font-size: 14px;
+            display: inline-block;
+            margin-left: 10px;
         }
+        
         .score.high { 
-            background: #28a745; 
+            background: linear-gradient(135deg, var(--success-color), #059669); 
         }
+        
         .score.medium { 
-            background: #ffc107; 
+            background: linear-gradient(135deg, var(--warning-color), #d97706); 
         }
+        
         .score.low { 
-            background: #dc3545; 
+            background: linear-gradient(135deg, var(--danger-color), #dc2626); 
         }
+        
         .header {
             text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        .header h1 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 3rem;
+            font-weight: 700;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
             margin-bottom: 30px;
         }
-        .header h1 {
-            color: #007bff;
-            margin-bottom: 10px;
-        }
+        
         .loading {
             text-align: center;
-            margin: 20px;
-            padding: 20px;
-            background: #fff3cd;
-            border-radius: 5px;
-            border-left: 4px solid #ffc107;
+            margin: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #fff3cd, #fef3c7);
+            border-radius: 15px;
+            border-left: 4px solid var(--warning-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+        
         .file-input {
-            margin: 20px 0;
+            margin: 25px 0;
         }
+        
         .file-input input[type="file"] {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 15px;
+            border: 2px solid var(--gray-200);
+            border-radius: 10px;
             width: 100%;
             background: white;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .file-input input[type="file"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .nav-buttons {
+            margin-top: 20px; 
+            display: flex; 
+            gap: 15px; 
+            justify-content: center; 
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons .btn {
+            min-width: 180px;
+        }
+
+        /* Enhanced animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        /* Code details styling */
+        .code h4 {
+            color: var(--gray-800);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .code p {
+            color: var(--gray-700);
+            margin: 8px 0;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🏥 AI Medical Coding System</h1>
-        <p>Upload medical documentation to automatically assign ICD-10-CM diagnosis codes using AI.</p>
+        <p>Advanced AI-powered medical document analysis with two-step validation for precise ICD-10-CM coding</p>
+        
+        <!-- Navigation -->
+        <div class="nav-buttons">
+            <a href="/" class="btn" style="background: linear-gradient(135deg, #6c757d, #495057);">
+                📄 Single Document
+            </a>
+            <a href="/spreadsheet" class="btn" style="background: linear-gradient(135deg, var(--success-color), #059669);">
+                📊 Bulk Processing
+            </a>
+        </div>
     </div>
     
     <div class="container">
         <h2>📄 Upload Medical Document</h2>
         <form id="uploadForm" enctype="multipart/form-data">
             <div class="upload-box">
-                <p>📁 Choose a medical document</p>
+                <p style="font-size: 1.2rem; font-weight: 600; margin-bottom: 20px;">📁 Choose a medical document</p>
                 <div class="file-input">
-                    <input type="file" id="fileInput" name="file" accept=".txt,.pdf,.doc,.docx" required>
+                    <input type="file" id="fileInput" name="file" accept=".txt,.pdf,.doc,.docx,.html,.htm" required>
                 </div>
-                <p><small>Supported formats: TXT, PDF, DOC, DOCX</small></p>
-                <button type="submit" class="btn">🔍 Analyze & Code</button>
+                <p><small style="color: var(--gray-600);">Supported formats: TXT, PDF, DOC, DOCX, HTML, HTM</small></p>
+                <button type="submit" class="btn">🔍 Analyze & Generate Codes</button>
             </div>
         </form>
     </div>
     
     <div id="loading" style="display: none;">
         <div class="loading">
-            <p>🤖 AI is analyzing your document... This may take a few moments.</p>
+            <p style="font-size: 1.1rem; font-weight: 600;">🤖 AI is analyzing your document with two-step validation... This may take a few moments.</p>
         </div>
     </div>
     

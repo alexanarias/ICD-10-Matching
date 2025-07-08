@@ -117,9 +117,9 @@ class ICD10CMParser:
             if not chapter_info:
                 continue
                 
-            section_info = self._extract_section_info(section_elem)
+                section_info = self._extract_section_info(section_elem)
                 
-            for diag_elem in section_elem.findall('diag'):
+                for diag_elem in section_elem.findall('diag'):
                 self._parse_diagnosis_xml(diag_elem, chapter_info, section_info)
 
     def _parse_diagnosis_xml(self, diag_elem: ET.Element, chapter_info: Dict, section_info: Dict, parent_codes: Optional[List[str]] = None):

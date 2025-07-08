@@ -36,37 +36,47 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
 });
 
 function displayResults(data) {
-    let html = '<div class="container"><h2>📊 Analysis Results</h2>';
+    let html = '<div class="container"><h2>📊 AI Medical Coding Results</h2>';
     
-    // Chapter predictions
-    html += '<h3>🎯 Chapter Predictions</h3>';
-    data.chapter_predictions.forEach(pred => {
-        const probPercent = (pred.probability * 100).toFixed(1);
-        html += `<div class="chapter">
-            <strong>${pred.chapter_name}</strong><br>
-            <span class="score ${getScoreClass(pred.probability)}">${probPercent}%</span>
-            <p><em>${pred.reasoning}</em></p>
-        </div>`;
-    });
+    // Document Information
+    html += `<div class="result-box">
+        <h3>📄 Document: ${data.title}</h3>
+        <p><strong>🔍 Keywords:</strong> ${data.enriched_keywords}</p>
+        <p><strong>📊 Total Codes Found:</strong> ${data.total_codes_found}</p>
+    </div>`;
     
-    // Final recommendations
-    if (data.final_codes && data.final_codes.length > 0) {
-        html += '<h3>✅ Recommended ICD-10-CM Codes</h3>';
-        data.final_codes.forEach(code => {
-            const confPercent = (code.confidence_score * 100).toFixed(1);
-            html += `<div class="code ${getConfidenceClass(code.confidence_score)}">
-                <h4>${code.icd_code} - ${code.description}</h4>
-                <span class="score ${getScoreClass(code.confidence_score)}">${confPercent}%</span>
-                <p><strong>Reasoning:</strong> ${code.reasoning}</p>
+    // ICD Codes Summary
+    if (data.diagnosis_codes && data.diagnosis_codes.length > 0) {
+        html += '<div class="result-box">';
+        html += '<h3>🎯 ICD-10-CM Diagnosis Codes</h3>';
+        html += '<p><strong>Codes:</strong> ' + data.diagnosis_codes.join(', ') + '</p>';
+        html += '</div>';
+    }
+    
+    // Enhanced Code Details
+    if (data.code_details && data.code_details.length > 0) {
+        html += '<h3>✅ Detailed Code Analysis</h3>';
+        data.code_details.forEach(code => {
+            const confidenceNum = parseInt(code.confidence.replace('%', ''));
+            html += `<div class="code ${getConfidenceClass(confidenceNum)}">
+                <h4>🏥 ${code.code}</h4>
+                <div class="score ${getScoreClass(confidenceNum)}">${code.confidence}</div>
+                <p><strong>Description:</strong> ${code.enhanced_description}</p>
             </div>`;
         });
-        
-        html += `<div class="result-box">
-            <h4>💡 Overall Recommendation</h4>
-            <p>${data.overall_recommendation}</p>
+    }
+    
+    // Clinical Summary
+    if (data.clinical_summary) {
+        html += `<div class="result-box" style="background: #f0f9ff; border-left-color: #3b82f6;">
+            <h4>🩺 Clinical Summary</h4>
+            <p>${data.clinical_summary}</p>
         </div>`;
-    } else {
-        html += '<div class="result-box"><p>❌ No high-confidence codes found. Please review the document or try with more detailed medical information.</p></div>';
+    }
+    
+    // No results message
+    if (!data.code_details || data.code_details.length === 0) {
+        html += '<div class="result-box" style="border-left-color: #dc3545;"><p>❌ No relevant ICD codes found. Please review the document or try with more detailed medical information.</p></div>';
     }
     
     html += '</div>';
@@ -80,14 +90,14 @@ function displayError(message) {
         </div></div>`;
 }
 
-function getScoreClass(score) {
-    if (score >= 0.7) return 'high';
-    if (score >= 0.5) return 'medium';
+function getScoreClass(confidence) {
+    if (confidence >= 70) return 'high';
+    if (confidence >= 50) return 'medium';
     return 'low';
 }
 
-function getConfidenceClass(score) {
-    if (score >= 0.7) return 'high-confidence';
-    if (score >= 0.5) return 'medium-confidence';
+function getConfidenceClass(confidence) {
+    if (confidence >= 70) return 'high-confidence';
+    if (confidence >= 50) return 'medium-confidence';
     return 'low-confidence';
 } 
