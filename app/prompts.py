@@ -1,11 +1,9 @@
 """Prompt templates for AI medical coding"""
 
-
-# ===== Clean Two-Step Process Prompts =====
 INITIAL_SELECTION_PROMPT = """
-🩺 PRIMARY CONDITION IDENTIFICATION - STRICT MEDICAL FOCUS
+🩺 ICD-10 CODE SELECTION — PRIMARY DIAGNOSIS FOCUS
 
-You are a senior medical coding specialist. Your CRITICAL task is to identify ONLY the PRIMARY medical conditions and select the MINIMUM relevant codes.
+You are a senior medical coding expert. Your task is to select only the most relevant **hierarchy-level ICD-10 codes** (not root codes) to help **diagnose the primary condition(s)** described.
 
 CLINICAL DOCUMENTATION:
 {medical_text}
@@ -13,62 +11,64 @@ CLINICAL DOCUMENTATION:
 CANDIDATE CODES:
 {candidate_codes}
 
-🚨 STRICT REQUIREMENTS - FOLLOW EXACTLY:
-🎯 Select 15-50 codes total
-🎯 Focus on THE PRIMARY medical condition only
-🎯 Choose 1-2 root code families maximum (e.g., ONLY F32/F33 for depression) or if you strongly believe the term includes mor than 2 include upto 4
-🚫 include secondary, related, or differential diagnosis codes
-🚫 DO NOT cast a wide net - be surgically precise
+🔒 STRICT SELECTION GUIDELINES:
+
+✅ Select only **hierarchy-level ICD-10 codes** — do NOT include root codes (e.g., use F32.1, not F32).
+✅ Choose codes that are **clinically central** or **strongly related** to the main diagnosis.
+✅ Focus the selection on codes that belong **mostly to ONE root code family** (e.g., F32.*).
+✅ You may include a **second root family** if the case **clearly requires it**.
+✅ The selected codes should **capture the diagnostic picture** — this includes subtypes, variants, or highly associated codes **within the same root**.
 
 
-TARGET: 15-50 codes representing ONLY those PRIMARY conditions
-AVOID: Comprehensive coverage, differential diagnosis, related conditions
+-DO NOT: Include broad root codes (e.g., F32, I10, E11)
+-DO NOT: Include secondary or unrelated diagnoses
+-DO NOT: Select codes from more than 2 root groups, under any condition
 
-CRITICAL: Count your selections. If over 25 codes, remove the least relevant ones.
+🎯 SELECTION TARGET:
+- Pick **15-50 hierarchy-level codes**
+- **At least 70-90% of the codes must come from a single root family**
+- If using more than one root, make sure it s **clinically justified**
+
+Return only the selected ICD-10 codes.
 """
 
-CLINICAL_REFINEMENT_PROMPT = """
-🩺 CLINICAL CODE ENHANCEMENT & VALIDATION
 
-You are a senior medical coding specialist performing final validation and enhancement of pre-selected relevant codes.
+CLINICAL_REFINEMENT_PROMPT = """
+🩺 CLINICAL ICD-10 CODE VALIDATION & ENHANCEMENT — STRICT RELEVANCE FILTERING
+
+You are a senior ICD-10 coding expert performing final refinement of AI-generated diagnostic codes based on provided clinical documentation. Your role is to validate, remove, and enhance codes — ensuring they are **strictly relevant**, **hierarchy-level**, and **clinically useful**.
 
 CLINICAL DOCUMENTATION:
 {medical_text}
 
-PRE-SELECTED CODES FOR ENHANCEMENT:
+PRE-SELECTED CODES FOR REFINEMENT:
 {selected_codes}
 
-IMPORTANT CONTEXT:
-- These codes have already been pre-filtered for relevance to the primary medical condition
-- Related hierarchy codes have been intentionally added for completeness
-- Your goal is to make sure irrelevant codes are not introduced during enrichemnt by removing them out 
+🎯 GOALS:
+1. ✅ Keep only **hierarchy-level ICD-10 codes** (e.g., F32.0, I10.1) — **do NOT include root codes** like F32, I10.
+2. ✅ Retain codes that are **highly relevant** or **clinically similar** to the primary condition(s).
+3. ✅ If a group of codes are closely related (e.g., F20.0, F20.2, F20.3), retain **all of them together** to reflect clinical variants.
+4. ❌ Remove any code that is irrelevant, unrelated, or medically weak in relation to the clinical documentation.
+5. ✅ Ensure that the **majority of retained codes** belong to the **same root code family**, or at most 2–3 related families **only if clinically justified**.
 
-REFINED TASK:
-1. KEEP most codes that are clinically relevant to the documentation
-2. Remove ONLY codes that are clearly unrelated or inappropriate
-3. PRESERVE multiple similar codes within the same condition family 
-4. Enhance descriptions to improve clinical clarity and usefulness
+🔍 INCLUSION GUIDELINES:
+- KEEP codes showing severity levels, episodes (acute, chronic), or variations of the same condition
+- KEEP codes strongly associated with or clinically similar to the main condition
+- KEEP codes grouped logically within a medical diagnosis family
+- REMOVE any code not clearly supported or justified by the documentation
 
-INCLUSION GUIDELINES:
-✅ KEEP codes representing different severities of the same condition
-✅ KEEP codes representing different episodes or variations  
-✅ KEEP codes within the primary medical condition family
-✅ KEEP codes that could be relevant for comprehensive documentation
-🚫 Remove  codes that are clearly unrelated to the primary condition
+🚫 STRICTLY FORBIDDEN:
+- ❌ Root-level codes (e.g., F32, I10)
+- ❌ Codes that are vague, generic, or weakly associated
+- ❌ Any code added merely to increase breadth — this is not a comprehensive set
 
-TARGET: Aim to retain  codes from the pre-selected set
-FOCUS: Enhancement of descriptions + confidence scoring
+📦 OUTPUT FORMAT:
+For each final code, return:
+- The ICD-10 code
+- A clinically enhanced description (specific, useful, and understandable)
+- A confidence score  indicating how well this code matches the documentation
 
-ENHANCEMENT REQUIREMENTS:
-- Improve description clarity while maintaining medical accuracy
-- Make descriptions more clinically specific and actionable
-- Add context about when this code would be most appropriate
-- Assign confidence scores based on clinical relevance to the documentation
-
-DELIVERABLE: Enhanced codes with improved descriptions and confidence scores, preserving medical completeness.
 """
-
-
 
 
 

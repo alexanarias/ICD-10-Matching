@@ -179,10 +179,13 @@ async def process_spreadsheet_document(file: UploadFile = File(...)) -> Spreadsh
         code_descriptions = format_enhanced_descriptions(refinement_result.refined_codes)
         code_scores = format_confidence_scores(refinement_result.refined_codes)
         
+        # NEW: Generate structured data for enhanced export capabilities
+        structured_codes = format_structured_codes(refinement_result.refined_codes)
+        
         # Generate unique name
         unique_name = title.replace(" ", "_").replace(",", "").replace("(", "").replace(")", "")
         
-        # Step 9: Return Clean Spreadsheet Row
+        # Step 9: Return Clean Spreadsheet Row with Enhanced Data
         return SpreadsheetRow(
             filepath=file.filename,
             title=title,
@@ -197,7 +200,8 @@ async def process_spreadsheet_document(file: UploadFile = File(...)) -> Spreadsh
             cpt_codes="",  # Leave 
             language="English",
             source="AI Medical Coding System v2.0",
-            document_type="Patient Education"
+            document_type="Patient Education",
+            icd_codes_structured=structured_codes  # NEW: Enhanced structured data
         )
         
     except ValueError as e:
@@ -236,6 +240,20 @@ def format_confidence_scores(codes: List[RefinedCodeValidation]) -> str:
         percentage = int(code.confidence_score * 100)
         scores.append(f"{code.icd_code}: {percentage}%")
     return ", ".join(scores)
+
+def format_structured_codes(codes: List[RefinedCodeValidation]) -> List[Dict[str, Any]]:
+    """Format codes as structured data for enhanced export capabilities"""
+    structured_codes = []
+    for code in codes:
+        structured_codes.append({
+            "icd_code": code.icd_code,
+            "root_code": code.icd_code[:3] if len(code.icd_code) >= 3 else code.icd_code,
+            "enhanced_description": code.enhanced_description,
+            "original_description": code.original_description,
+            "confidence_score": code.confidence_score,
+            "confidence_percentage": f"{int(code.confidence_score * 100)}%"
+        })
+    return structured_codes
 
 
 if __name__ == "__main__":
